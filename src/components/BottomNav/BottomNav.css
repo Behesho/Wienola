@@ -17,9 +17,9 @@
   max-width: 420px;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   height: 66px;
-  padding: 0 8px;
+  padding: 0 10px;
   border-radius: 33px;
   background: color-mix(in srgb, var(--color-surface) 90%, transparent);
   border: 1px solid var(--color-border);
@@ -31,13 +31,12 @@
 }
 
 .bottom-nav__item {
-  position: relative;
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 3px;
-  width: 60px;
   padding: 8px 4px;
   border-radius: 16px;
   color: var(--color-text-secondary);
@@ -68,55 +67,36 @@
   transform: scale(1.08);
 }
 
-.bottom-nav__item--fab {
-  justify-content: flex-end;
-}
-
-.bottom-nav__icon-spacer {
-  width: 22px;
-  height: 22px;
-}
-
-.bottom-nav__fab-circle {
-  position: absolute;
-  top: -28px;
-  left: 50%;
-  transform: translateX(-50%);
+.bottom-nav__fab {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 58px;
+  height: 58px;
+  margin: 0 4px;
   border-radius: 50%;
   background: var(--color-brand);
   color: var(--color-brand-ink);
+  text-decoration: none;
+  transform: translateY(-22px);
   box-shadow:
-    0 10px 22px rgba(var(--color-brand-rgb), 0.4),
-    0 4px 10px rgba(0, 0, 0, 0.22);
+    0 10px 24px rgba(var(--color-brand-rgb), 0.45),
+    0 4px 10px rgba(0, 0, 0, 0.25);
   transition:
     transform 250ms ease,
     box-shadow 250ms ease;
 }
 
 .bottom-nav__fab-icon {
-  width: 24px;
-  height: 24px;
+  width: 25px;
+  height: 25px;
 }
 
-.bottom-nav__item--fab:hover .bottom-nav__fab-circle {
-  transform: translateX(-50%) translateY(-2px) scale(1.05);
+.bottom-nav__fab:hover {
+  transform: translateY(-25px) scale(1.05);
 }
 
-.bottom-nav__item--fab:active .bottom-nav__fab-circle {
-  transform: translateX(-50%) scale(0.96);
-}
-
-.bottom-nav__item--fab.bottom-nav__item--active .bottom-nav__fab-circle {
-  box-shadow:
-    0 0 0 4px color-mix(in srgb, var(--color-brand) 22%, transparent),
-    0 10px 22px rgba(var(--color-brand-rgb), 0.45);
-}
-
-.bottom-nav__item--fab.bottom-nav__item--active {
-  color: var(--color-brand);
+.bottom-nav__fab:active {
+  transform: translateY(-18px) scale(0.96);
 }

@@ -57,6 +57,16 @@ export function CameraIcon(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+export function ClipboardIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <rect x="5.5" y="4.5" width="13" height="16" rx="2" />
+      <path d="M9 4.5V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v.5" />
+      <path d="M8.5 10.5h7M8.5 13.5h7M8.5 16.5h4.5" />
+    </svg>
+  )
+}
+
 export function PinIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...iconProps(props)}>

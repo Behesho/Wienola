@@ -6,6 +6,7 @@ import DashboardLayout from './layouts/DashboardLayout'
 import HomePage from './pages/Dashboard/HomePage'
 import SearchPage from './pages/Dashboard/SearchPage'
 import NewOrderPage from './pages/Dashboard/NewOrderPage'
+import OrdersPage from './pages/Dashboard/OrdersPage'
 import ProfilePage from './pages/Dashboard/ProfilePage'
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="search" element={<SearchPage />} />
         <Route path="new-order" element={<NewOrderPage />} />
+        <Route path="orders" element={<OrdersPage />} />
         <Route path="profile" element={<ProfilePage />} />
       </Route>
     </Routes>
