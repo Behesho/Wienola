@@ -1,0 +1,132 @@
+.splash {
+  --icon-duration: 650ms;
+  --icon-ease: cubic-bezier(0.33, 1, 0.68, 1);
+  --glow-delay: 650ms;
+  --glow-duration: 450ms;
+  --text-delay: 800ms;
+  --text-duration: 300ms;
+  --exit-duration: 350ms;
+
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  opacity: 1;
+  transition: opacity var(--exit-duration) ease;
+}
+
+.splash--exiting {
+  opacity: 0;
+}
+
+.splash__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.splash__icon-wrap {
+  position: relative;
+  width: clamp(88px, 22vw, 128px);
+  height: clamp(88px, 22vw, 128px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.splash__glow {
+  position: absolute;
+  inset: -35px;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    var(--color-brand) 0%,
+    transparent 72%
+  );
+  opacity: 0;
+  filter: blur(6px);
+  animation: splash-glow var(--glow-duration) ease-out var(--glow-delay) 1
+    both;
+  pointer-events: none;
+}
+
+.splash__icon {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(0.94);
+  animation: splash-icon-intro var(--icon-duration) var(--icon-ease) forwards;
+  will-change: opacity, transform;
+}
+
+.splash__text {
+  margin-top: 22px;
+  text-align: center;
+  opacity: 0;
+  animation: splash-text-intro var(--text-duration) ease-out var(--text-delay)
+    forwards;
+}
+
+.splash__wordmark {
+  margin: 0;
+  font-size: clamp(1.375rem, 5vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+}
+
+.splash__tagline {
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+@keyframes splash-icon-intro {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes splash-glow {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.15;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes splash-text-intro {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash__icon,
+  .splash__text,
+  .splash__glow {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+  }
+
+  .splash {
+    transition-duration: 1ms;
+  }
+}
