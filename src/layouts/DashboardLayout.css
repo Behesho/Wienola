@@ -1,0 +1,11 @@
+.dashboard-layout {
+  min-height: 100%;
+  background: var(--color-bg);
+}
+
+.dashboard-layout__content {
+  min-height: 100%;
+  padding: 24px 20px calc(120px + env(safe-area-inset-bottom, 0px));
+  max-width: 480px;
+  margin: 0 auto;
+}

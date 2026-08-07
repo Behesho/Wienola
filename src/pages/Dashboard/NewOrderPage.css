@@ -1,0 +1,133 @@
+.new-order-page__title {
+  margin: 4px 0 4px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.new-order-page__subtitle {
+  margin: 0 0 24px;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.new-order-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.new-order-page__photo {
+  display: block;
+  cursor: pointer;
+}
+
+.new-order-page__photo input {
+  display: none;
+}
+
+.new-order-page__photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 140px;
+  border-radius: 16px;
+  border: 1.5px dashed var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: border-color 200ms ease;
+}
+
+.new-order-page__photo-placeholder svg {
+  width: 26px;
+  height: 26px;
+}
+
+.new-order-page__photo:hover .new-order-page__photo-placeholder {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+}
+
+.new-order-page__photo-preview {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+}
+
+.new-order-page__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.new-order-page__field span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.new-order-page__field-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.new-order-page__field input,
+.new-order-page__field textarea {
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.new-order-page__field input {
+  height: 46px;
+}
+
+.new-order-page__field textarea {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  resize: vertical;
+  font: inherit;
+}
+
+.new-order-page__field input::placeholder,
+.new-order-page__field textarea::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+}
+
+.new-order-page__field input:focus,
+.new-order-page__field textarea:focus {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(var(--color-brand-rgb), 0.18);
+}
+
+.new-order-page__submit {
+  margin-top: 6px;
+  height: 48px;
+  border-radius: 10px;
+  border: none;
+  background: var(--color-brand);
+  color: var(--color-brand-ink);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: filter 150ms ease;
+}
+
+.new-order-page__submit:hover {
+  filter: brightness(1.08);
+}

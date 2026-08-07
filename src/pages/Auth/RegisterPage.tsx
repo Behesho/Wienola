@@ -1,5 +1,5 @@
 import { useState, type FormEvent, type SVGProps } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import BrandLogo from '../../components/BrandLogo/BrandLogo'
 import './Auth.css'
 
@@ -44,6 +44,7 @@ function TruckIcon(props: SVGProps<SVGSVGElement>) {
 }
 
 function RegisterPage() {
+  const navigate = useNavigate()
   const [role, setRole] = useState<Role | null>(null)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -61,6 +62,7 @@ function RegisterPage() {
     }
 
     setError('')
+    navigate('/dashboard')
   }
 
   return (

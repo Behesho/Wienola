@@ -1,0 +1,37 @@
+.profile-page__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 4px 0 24px;
+}
+
+.profile-page__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.profile-page__avatar-icon {
+  width: 26px;
+  height: 26px;
+  color: var(--color-brand);
+}
+
+.profile-page__name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.profile-page__email {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
