@@ -1,5 +1,6 @@
 import { PersonIcon } from '../../components/icons/NavIcons'
 import DashboardSection from '../../components/DashboardSection/DashboardSection'
+import ThemeSelector from '../../components/ThemeSelector/ThemeSelector'
 import './ProfilePage.css'
 
 function ProfilePage() {
@@ -17,6 +18,10 @@ function ProfilePage() {
 
       <DashboardSection title="Konto">
         <p>Persönliche Daten, Zahlungsmethoden und Einstellungen folgen in Kürze.</p>
+      </DashboardSection>
+
+      <DashboardSection title="Darstellung">
+        <ThemeSelector />
       </DashboardSection>
 
       <DashboardSection title="Support">

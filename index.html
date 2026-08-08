@@ -4,9 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#141416" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta id="theme-color-meta" name="theme-color" content="#262626" />
     <title>Lasten-Wien | Liefer- &amp; Transportservice</title>
+    <script>
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem('lasten-wien-theme');
+        } catch (e) {}
+        var theme = stored === 'light' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
