@@ -1,86 +1,170 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react'
-import { CameraIcon, PinIcon } from '../../components/icons/NavIcons'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ChevronLeftIcon } from './NewOrder/icons'
+import PhotoStep from './NewOrder/PhotoStep'
+import DimensionsStep from './NewOrder/DimensionsStep'
+import DetailsStep from './NewOrder/DetailsStep'
+import VehicleStep from './NewOrder/VehicleStep'
+import RouteStep from './NewOrder/RouteStep'
+import ScheduleStep from './NewOrder/ScheduleStep'
+import SuccessScreen from './NewOrder/SuccessScreen'
+import { INITIAL_ORDER_DATA, STEP_TITLES, type OrderFormData } from './NewOrder/types'
 import './NewOrderPage.css'
 
-function NewOrderPage() {
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null)
-  const [pickup, setPickup] = useState('')
-  const [destination, setDestination] = useState('')
-  const [description, setDescription] = useState('')
+function validateStep(step: number, data: OrderFormData): string | null {
+  switch (step) {
+    case 2:
+      return data.description.trim()
+        ? null
+        : 'Bitte beschreibe, was transportiert werden soll.'
+    case 3:
+      return data.vehicle ? null : 'Bitte wähle ein Fahrzeug aus.'
+    case 4:
+      return data.pickup.trim() && data.destination.trim()
+        ? null
+        : 'Bitte gib Abhol- und Zieladresse ein.'
+    case 5:
+      if (data.express) return null
+      return data.date && data.time
+        ? null
+        : 'Bitte wähle einen Termin oder „So schnell wie möglich“.'
+    default:
+      return null
+  }
+}
 
-  function handlePhotoChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0]
-    setPhotoPreview(file ? URL.createObjectURL(file) : null)
+function NewOrderPage() {
+  const navigate = useNavigate()
+  const [step, setStep] = useState(0)
+  const [data, setData] = useState<OrderFormData>(INITIAL_ORDER_DATA)
+  const [error, setError] = useState<string | null>(null)
+  const [submitted, setSubmitted] = useState(false)
+
+  const lastStep = STEP_TITLES.length - 1
+  const isLastStep = step === lastStep
+
+  function update(patch: Partial<OrderFormData>) {
+    setData((prev) => ({ ...prev, ...patch }))
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+  function handleBack() {
+    setError(null)
+    setStep((current) => Math.max(0, current - 1))
+  }
+
+  function handleNext() {
+    const validationError = validateStep(step, data)
+    if (validationError) {
+      setError(validationError)
+      return
+    }
+    setError(null)
+    if (isLastStep) {
+      setSubmitted(true)
+    } else {
+      setStep((current) => current + 1)
+    }
+  }
+
+  function renderStep() {
+    switch (step) {
+      case 0:
+        return (
+          <PhotoStep photo={data.photo} onChange={(photo) => update({ photo })} />
+        )
+      case 1:
+        return (
+          <DimensionsStep
+            length={data.length}
+            width={data.width}
+            height={data.height}
+            onChange={update}
+          />
+        )
+      case 2:
+        return (
+          <DetailsStep
+            description={data.description}
+            onChange={(description) => update({ description })}
+          />
+        )
+      case 3:
+        return (
+          <VehicleStep
+            vehicle={data.vehicle}
+            onChange={(vehicle) => update({ vehicle })}
+          />
+        )
+      case 4:
+        return (
+          <RouteStep
+            pickup={data.pickup}
+            destination={data.destination}
+            onChange={update}
+          />
+        )
+      case 5:
+        return (
+          <ScheduleStep
+            date={data.date}
+            time={data.time}
+            express={data.express}
+            onChange={update}
+          />
+        )
+      default:
+        return null
+    }
+  }
+
+  if (submitted) {
+    return (
+      <div className="new-order-page">
+        <SuccessScreen onViewOffers={() => navigate('/dashboard/orders')} />
+      </div>
+    )
   }
 
   return (
     <div className="new-order-page">
-      <h1 className="new-order-page__title">Neuer Auftrag</h1>
-      <p className="new-order-page__subtitle">
-        Beschreiben Sie Ihren Transport in wenigen Schritten.
-      </p>
-
-      <form className="new-order-page__form" onSubmit={handleSubmit} noValidate>
-        <label className="new-order-page__photo">
-          <input type="file" accept="image/*" onChange={handlePhotoChange} />
-          {photoPreview ? (
-            <img
-              src={photoPreview}
-              alt=""
-              className="new-order-page__photo-preview"
-            />
-          ) : (
-            <span className="new-order-page__photo-placeholder">
-              <CameraIcon />
-              Foto hinzufügen
-            </span>
-          )}
-        </label>
-
-        <label className="new-order-page__field">
-          <span>
-            <PinIcon className="new-order-page__field-icon" />
-            Abholadresse
-          </span>
-          <input
-            type="text"
-            placeholder="Straße, Hausnummer, Wien"
-            value={pickup}
-            onChange={(event) => setPickup(event.target.value)}
-          />
-        </label>
-
-        <label className="new-order-page__field">
-          <span>
-            <PinIcon className="new-order-page__field-icon" />
-            Zieladresse
-          </span>
-          <input
-            type="text"
-            placeholder="Straße, Hausnummer, Wien"
-            value={destination}
-            onChange={(event) => setDestination(event.target.value)}
-          />
-        </label>
-
-        <label className="new-order-page__field">
-          <span>Beschreibung</span>
-          <textarea
-            rows={4}
-            placeholder="Was möchten Sie transportieren?"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          />
-        </label>
-
-        <button type="submit" className="new-order-page__submit">
-          Auftrag erstellen
+      <div className="new-order-page__header">
+        <button
+          type="button"
+          className="new-order-page__back"
+          onClick={handleBack}
+          disabled={step === 0}
+          aria-label="Zurück"
+        >
+          <ChevronLeftIcon />
         </button>
-      </form>
+
+        <div className="new-order-page__progress">
+          <div className="new-order-page__progress-track">
+            <div
+              className="new-order-page__progress-fill"
+              style={{ width: `${((step + 1) / STEP_TITLES.length) * 100}%` }}
+            />
+          </div>
+          <span className="new-order-page__progress-label">
+            Schritt {step + 1} von {STEP_TITLES.length} · {STEP_TITLES[step]}
+          </span>
+        </div>
+      </div>
+
+      <div className="new-order-page__step" key={step}>
+        {renderStep()}
+      </div>
+
+      <div className="new-order-page__footer">
+        {error && <p className="new-order-page__error">{error}</p>}
+        <button
+          type="button"
+          className="new-order-page__submit"
+          onClick={handleNext}
+        >
+          {isLastStep ? 'Auftrag veröffentlichen' : 'Weiter'}
+        </button>
+      </div>
     </div>
   )
 }

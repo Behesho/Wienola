@@ -1,0 +1,125 @@
+.schedule-step__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.schedule-step__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.schedule-step__field span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.schedule-step__field-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.schedule-step__field input {
+  height: 48px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    opacity 150ms ease;
+}
+
+.schedule-step__field input:focus {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(var(--color-brand-rgb), 0.18);
+}
+
+.schedule-step__field input:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.schedule-step__divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.schedule-step__divider::before,
+.schedule-step__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.schedule-step__express {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    border-color 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.schedule-step__express:hover {
+  border-color: rgba(var(--color-brand-rgb), 0.5);
+}
+
+.schedule-step__express-icon {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  transition: color 220ms ease;
+}
+
+.schedule-step__express-title {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.schedule-step__express-subtitle {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+.schedule-step__express--selected {
+  border-color: var(--color-brand);
+  background: rgba(var(--color-brand-rgb), 0.1);
+  box-shadow:
+    0 0 0 3px rgba(var(--color-brand-rgb), 0.16),
+    0 0 24px rgba(var(--color-brand-rgb), 0.22);
+}
+
+.schedule-step__express--selected .schedule-step__express-icon {
+  color: var(--color-brand);
+}

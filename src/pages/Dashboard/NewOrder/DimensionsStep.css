@@ -1,0 +1,62 @@
+.dimensions-step__sliders {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-top: 8px;
+}
+
+.parcel-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 190px;
+  perspective: 900px;
+  margin-bottom: 12px;
+}
+
+.parcel {
+  position: relative;
+  width: 1px;
+  height: 1px;
+  transform-style: preserve-3d;
+  transform: rotateX(-28deg) rotateY(-38deg);
+}
+
+.parcel__face {
+  position: absolute;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--color-brand) 55%, var(--color-border));
+  transition:
+    width 300ms ease,
+    height 300ms ease,
+    transform 300ms ease,
+    background-color 250ms ease,
+    border-color 250ms ease;
+}
+
+.parcel__face--top {
+  width: calc(var(--parcel-w) * 1px);
+  height: calc(var(--parcel-d) * 1px);
+  left: calc(var(--parcel-w) * -0.5px);
+  top: calc(var(--parcel-d) * -0.5px);
+  background: color-mix(in srgb, var(--color-brand) 32%, var(--color-surface));
+  transform: rotateX(90deg) translateZ(calc(var(--parcel-h) * 0.5px));
+}
+
+.parcel__face--front {
+  width: calc(var(--parcel-w) * 1px);
+  height: calc(var(--parcel-h) * 1px);
+  left: calc(var(--parcel-w) * -0.5px);
+  top: calc(var(--parcel-h) * -0.5px);
+  background: color-mix(in srgb, var(--color-brand) 18%, var(--color-surface));
+  transform: translateZ(calc(var(--parcel-d) * 0.5px));
+}
+
+.parcel__face--right {
+  width: calc(var(--parcel-d) * 1px);
+  height: calc(var(--parcel-h) * 1px);
+  left: calc(var(--parcel-d) * -0.5px);
+  top: calc(var(--parcel-h) * -0.5px);
+  background: color-mix(in srgb, var(--color-brand) 9%, var(--color-surface));
+  transform: rotateY(90deg) translateZ(calc(var(--parcel-w) * 0.5px));
+}

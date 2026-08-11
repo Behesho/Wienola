@@ -1,0 +1,164 @@
+.dimension-slider {
+  width: 100%;
+}
+
+.dimension-slider__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.dimension-slider__label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.dimension-slider__value {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.dimension-slider__value-input {
+  width: 52px;
+  height: 30px;
+  padding: 0 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-brand);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: right;
+  outline: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+  /* Hide native number spinners — the +/- buttons below cover that role. */
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.dimension-slider__value-input::-webkit-outer-spin-button,
+.dimension-slider__value-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.dimension-slider__value-input:focus {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(var(--color-brand-rgb), 0.18);
+}
+
+.dimension-slider__unit {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.dimension-slider__control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dimension-slider__step-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.dimension-slider__step-btn:hover {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+}
+
+.dimension-slider__step-btn:active {
+  transform: scale(0.92);
+}
+
+.dimension-slider__range {
+  flex: 1;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    var(--color-brand) 0%,
+    var(--color-brand) var(--range-progress, 0%),
+    var(--color-border) var(--range-progress, 0%),
+    var(--color-border) 100%
+  );
+}
+
+/* Chrome / Safari / Edge (incl. iOS Safari + Android Chrome) */
+.dimension-slider__range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.dimension-slider__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  margin-top: -9px;
+  border-radius: 50%;
+  background: var(--color-brand);
+  border: 3px solid var(--color-bg);
+  box-shadow:
+    0 2px 8px rgba(var(--color-brand-rgb), 0.5),
+    0 0 0 1px rgba(var(--color-brand-rgb), 0.3);
+  transition: transform 150ms ease;
+}
+
+.dimension-slider__range:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+
+/* Firefox */
+.dimension-slider__range::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-border);
+}
+
+.dimension-slider__range::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-brand);
+}
+
+.dimension-slider__range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--color-bg);
+  border-radius: 50%;
+  background: var(--color-brand);
+  box-shadow: 0 2px 8px rgba(var(--color-brand-rgb), 0.5);
+  transition: transform 150ms ease;
+}
+
+.dimension-slider__range:active::-moz-range-thumb {
+  transform: scale(1.15);
+}
