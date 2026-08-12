@@ -1,29 +1,47 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeftIcon } from './NewOrder/icons'
+import TransportTypeStep from './NewOrder/TransportTypeStep'
 import PhotoStep from './NewOrder/PhotoStep'
 import DimensionsStep from './NewOrder/DimensionsStep'
+import MovingDetailsStep from './NewOrder/MovingDetailsStep'
 import DetailsStep from './NewOrder/DetailsStep'
 import VehicleStep from './NewOrder/VehicleStep'
 import RouteStep from './NewOrder/RouteStep'
 import ScheduleStep from './NewOrder/ScheduleStep'
 import SuccessScreen from './NewOrder/SuccessScreen'
-import { INITIAL_ORDER_DATA, STEP_TITLES, type OrderFormData } from './NewOrder/types'
+import {
+  getStepSequence,
+  INITIAL_ORDER_DATA,
+  isAddressComplete,
+  STEP_LABELS,
+  type OrderFormData,
+  type StepKey,
+} from './NewOrder/types'
 import './NewOrderPage.css'
 
-function validateStep(step: number, data: OrderFormData): string | null {
-  switch (step) {
-    case 2:
+function validateStep(stepKey: StepKey, data: OrderFormData): string | null {
+  switch (stepKey) {
+    case 'type':
+      return data.transportType ? null : 'Bitte wähle eine Auftragsart aus.'
+    case 'moving':
+      return data.pickupFloor &&
+        data.pickupElevator &&
+        data.destinationFloor &&
+        data.destinationElevator
+        ? null
+        : 'Bitte gib Etage und Aufzug für Abholung und Ziel an.'
+    case 'details':
       return data.description.trim()
         ? null
         : 'Bitte beschreibe, was transportiert werden soll.'
-    case 3:
+    case 'vehicle':
       return data.vehicle ? null : 'Bitte wähle ein Fahrzeug aus.'
-    case 4:
-      return data.pickup.trim() && data.destination.trim()
+    case 'route':
+      return isAddressComplete(data.pickup) && isAddressComplete(data.destination)
         ? null
-        : 'Bitte gib Abhol- und Zieladresse ein.'
-    case 5:
+        : 'Bitte vervollständige Abholung und Ziel.'
+    case 'schedule':
       if (data.express) return null
       return data.date && data.time
         ? null
@@ -35,13 +53,16 @@ function validateStep(step: number, data: OrderFormData): string | null {
 
 function NewOrderPage() {
   const navigate = useNavigate()
-  const [step, setStep] = useState(0)
+  const [stepIndex, setStepIndex] = useState(0)
   const [data, setData] = useState<OrderFormData>(INITIAL_ORDER_DATA)
   const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
 
-  const lastStep = STEP_TITLES.length - 1
-  const isLastStep = step === lastStep
+  const steps = getStepSequence(data.transportType)
+  const currentStep = steps[stepIndex]
+  // The type step is only "last" in the trivial (type not yet chosen) case —
+  // it always leads to more steps once a transport type is selected.
+  const isLastStep = currentStep !== 'type' && stepIndex === steps.length - 1
 
   function update(patch: Partial<OrderFormData>) {
     setData((prev) => ({ ...prev, ...patch }))
@@ -49,11 +70,11 @@ function NewOrderPage() {
 
   function handleBack() {
     setError(null)
-    setStep((current) => Math.max(0, current - 1))
+    setStepIndex((current) => Math.max(0, current - 1))
   }
 
   function handleNext() {
-    const validationError = validateStep(step, data)
+    const validationError = validateStep(currentStep, data)
     if (validationError) {
       setError(validationError)
       return
@@ -62,17 +83,27 @@ function NewOrderPage() {
     if (isLastStep) {
       setSubmitted(true)
     } else {
-      setStep((current) => current + 1)
+      setStepIndex((current) => current + 1)
     }
   }
 
   function renderStep() {
-    switch (step) {
-      case 0:
+    switch (currentStep) {
+      case 'type':
         return (
-          <PhotoStep photo={data.photo} onChange={(photo) => update({ photo })} />
+          <TransportTypeStep
+            transportType={data.transportType}
+            onChange={(transportType) => update({ transportType })}
+          />
         )
-      case 1:
+      case 'photo':
+        return (
+          <PhotoStep
+            photo={data.photo}
+            onChange={(photo) => update({ photo })}
+          />
+        )
+      case 'dimensions':
         return (
           <DimensionsStep
             length={data.length}
@@ -81,21 +112,31 @@ function NewOrderPage() {
             onChange={update}
           />
         )
-      case 2:
+      case 'moving':
+        return (
+          <MovingDetailsStep
+            pickupFloor={data.pickupFloor}
+            pickupElevator={data.pickupElevator}
+            destinationFloor={data.destinationFloor}
+            destinationElevator={data.destinationElevator}
+            onChange={update}
+          />
+        )
+      case 'details':
         return (
           <DetailsStep
             description={data.description}
             onChange={(description) => update({ description })}
           />
         )
-      case 3:
+      case 'vehicle':
         return (
           <VehicleStep
             vehicle={data.vehicle}
             onChange={(vehicle) => update({ vehicle })}
           />
         )
-      case 4:
+      case 'route':
         return (
           <RouteStep
             pickup={data.pickup}
@@ -103,7 +144,7 @@ function NewOrderPage() {
             onChange={update}
           />
         )
-      case 5:
+      case 'schedule':
         return (
           <ScheduleStep
             date={data.date}
@@ -132,7 +173,7 @@ function NewOrderPage() {
           type="button"
           className="new-order-page__back"
           onClick={handleBack}
-          disabled={step === 0}
+          disabled={stepIndex === 0}
           aria-label="Zurück"
         >
           <ChevronLeftIcon />
@@ -142,16 +183,17 @@ function NewOrderPage() {
           <div className="new-order-page__progress-track">
             <div
               className="new-order-page__progress-fill"
-              style={{ width: `${((step + 1) / STEP_TITLES.length) * 100}%` }}
+              style={{ width: `${((stepIndex + 1) / steps.length) * 100}%` }}
             />
           </div>
           <span className="new-order-page__progress-label">
-            Schritt {step + 1} von {STEP_TITLES.length} · {STEP_TITLES[step]}
+            Schritt {stepIndex + 1} von {steps.length} ·{' '}
+            {STEP_LABELS[currentStep]}
           </span>
         </div>
       </div>
 
-      <div className="new-order-page__step" key={step}>
+      <div className="new-order-page__step" key={currentStep}>
         {renderStep()}
       </div>
 

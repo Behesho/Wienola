@@ -98,3 +98,80 @@ export function ChevronLeftIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
+export function HouseMoveIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <path d="M4 11.5 12 4l8 7.5" />
+      <path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9" />
+      <path d="M9.5 20v-5h5v5" />
+    </svg>
+  )
+}
+
+export function StackedBoxesIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <rect x="3.5" y="10.5" width="7" height="7" rx="1" />
+      <rect x="13.5" y="10.5" width="7" height="7" rx="1" />
+      <rect x="8.5" y="4" width="7" height="7" rx="1" />
+    </svg>
+  )
+}
+
+export function SingleBoxIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <path d="M12 3.5 20 7.5v9L12 20.5 4 16.5v-9z" />
+      <path d="M4 7.5 12 11.5 20 7.5M12 11.5v9" />
+    </svg>
+  )
+}
+
+export function TrashIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <path d="M5 7h14" />
+      <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+      <path d="M6.5 7l1 12.5a1 1 0 0 0 1 .9h7a1 1 0 0 0 1-.9L17.5 7" />
+      <path d="M10 11v6M14 11v6" />
+    </svg>
+  )
+}
+
+export function EnvelopeIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <rect x="3.5" y="6" width="17" height="12" rx="2" />
+      <path d="M4 7.5 12 13.5 20 7.5" />
+    </svg>
+  )
+}
+
+export function CourierIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <rect x="4.5" y="8" width="10" height="9" rx="1.5" />
+      <path d="M17 12h3M17.3 9.3h2.4M17.3 14.7h2.4" />
+    </svg>
+  )
+}
+
+export function ShieldIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <path d="M12 3.5 19 6.5v5c0 5-3.2 8-7 9.5-3.8-1.5-7-4.5-7-9.5v-5z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  )
+}
+
+export function MoreIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <circle cx="12" cy="6" r="1.3" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="18" r="1.3" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}

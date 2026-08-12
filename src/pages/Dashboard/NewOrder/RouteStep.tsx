@@ -1,10 +1,14 @@
-import { PinIcon } from '../../../components/icons/NavIcons'
+import AddressGroup from './AddressGroup'
+import type { AddressValue } from './types'
 import './RouteStep.css'
 
 interface RouteStepProps {
-  pickup: string
-  destination: string
-  onChange: (patch: { pickup?: string; destination?: string }) => void
+  pickup: AddressValue
+  destination: AddressValue
+  onChange: (patch: {
+    pickup?: AddressValue
+    destination?: AddressValue
+  }) => void
 }
 
 function RouteStep({ pickup, destination, onChange }: RouteStepProps) {
@@ -12,31 +16,17 @@ function RouteStep({ pickup, destination, onChange }: RouteStepProps) {
     <div className="route-step">
       <h2 className="order-step__heading">Transportstrecke</h2>
 
-      <label className="route-step__field">
-        <span>
-          <PinIcon className="route-step__field-icon" />
-          Abholung
-        </span>
-        <input
-          type="text"
-          placeholder="Abholadresse eingeben"
-          value={pickup}
-          onChange={(event) => onChange({ pickup: event.target.value })}
-        />
-      </label>
+      <AddressGroup
+        heading="Abholung"
+        value={pickup}
+        onChange={(value) => onChange({ pickup: value })}
+      />
 
-      <label className="route-step__field">
-        <span>
-          <PinIcon className="route-step__field-icon" />
-          Ziel
-        </span>
-        <input
-          type="text"
-          placeholder="Zieladresse eingeben"
-          value={destination}
-          onChange={(event) => onChange({ destination: event.target.value })}
-        />
-      </label>
+      <AddressGroup
+        heading="Ziel"
+        value={destination}
+        onChange={(value) => onChange({ destination: value })}
+      />
     </div>
   )
 }

@@ -1,8 +1,23 @@
+.address-group {
+  margin-bottom: 28px;
+}
+
+.address-group:last-child {
+  margin-bottom: 0;
+}
+
+.address-group__heading {
+  margin: 0 0 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
 .route-step__field {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 16px;
+  margin-top: 16px;
 }
 
 .route-step__field span {
@@ -12,11 +27,6 @@
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--color-text-secondary);
-}
-
-.route-step__field-icon {
-  width: 15px;
-  height: 15px;
 }
 
 .route-step__field input {
