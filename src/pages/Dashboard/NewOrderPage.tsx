@@ -10,6 +10,7 @@ import MovingDetailsStep from './NewOrder/MovingDetailsStep'
 import DetailsStep from './NewOrder/DetailsStep'
 import VehicleStep from './NewOrder/VehicleStep'
 import RouteStep from './NewOrder/RouteStep'
+import ContactStep from './NewOrder/ContactStep'
 import ScheduleStep from './NewOrder/ScheduleStep'
 import SuccessScreen from './NewOrder/SuccessScreen'
 import {
@@ -43,6 +44,16 @@ function validateStep(stepKey: StepKey, data: OrderFormData): string | null {
       return isAddressComplete(data.pickup) && isAddressComplete(data.destination)
         ? null
         : 'Bitte vervollständige Abholung und Ziel.'
+    case 'contact': {
+      if (!data.contactPhone.trim()) {
+        return 'Bitte gib deine Telefonnummer ein.'
+      }
+      const parsedAmount = Number(data.amount)
+      if (!data.amount || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+        return 'Bitte gib einen gültigen Auftragsbetrag ein.'
+      }
+      return null
+    }
     case 'schedule':
       if (data.express) return null
       return data.date && data.time
@@ -162,6 +173,14 @@ function NewOrderPage() {
           <RouteStep
             pickup={data.pickup}
             destination={data.destination}
+            onChange={update}
+          />
+        )
+      case 'contact':
+        return (
+          <ContactStep
+            contactPhone={data.contactPhone}
+            amount={data.amount}
             onChange={update}
           />
         )

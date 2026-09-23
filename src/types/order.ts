@@ -37,6 +37,7 @@ export interface Order {
   scheduled_date: string | null
   scheduled_time: string | null
   express: boolean
+  contact_phone: string | null
   payer: Payer | null
   amount: number | null
   payment_status: PaymentStatus

@@ -41,6 +41,8 @@ export interface OrderFormData {
   pickupElevator: ElevatorAnswer
   destinationFloor: string
   destinationElevator: ElevatorAnswer
+  contactPhone: string
+  amount: string
 }
 
 export const INITIAL_ORDER_DATA: OrderFormData = {
@@ -60,6 +62,8 @@ export const INITIAL_ORDER_DATA: OrderFormData = {
   pickupElevator: null,
   destinationFloor: '',
   destinationElevator: null,
+  contactPhone: '',
+  amount: '',
 }
 
 export type StepKey =
@@ -70,6 +74,7 @@ export type StepKey =
   | 'details'
   | 'vehicle'
   | 'route'
+  | 'contact'
   | 'schedule'
 
 export const STEP_LABELS: Record<StepKey, string> = {
@@ -80,26 +85,37 @@ export const STEP_LABELS: Record<StepKey, string> = {
   details: 'Details',
   vehicle: 'Fahrzeug',
   route: 'Strecke',
+  contact: 'Kontakt',
   schedule: 'Termin',
 }
 
 /**
  * The step sequence depends on the selected transport type — some
  * categories skip photo/dimensions entirely, "Kompletter Umzug" swaps
- * the details step for floor/elevator questions.
+ * the details step for floor/elevator questions. Every flow ends with
+ * contact (phone + price) then schedule.
  */
 export function getStepSequence(type: TransportType | null): StepKey[] {
   if (type === 'moving') {
-    return ['type', 'moving', 'vehicle', 'route', 'schedule']
+    return ['type', 'moving', 'vehicle', 'route', 'contact', 'schedule']
   }
   if (type === 'multiple' || type === 'single' || type === 'other') {
-    return ['type', 'photo', 'dimensions', 'details', 'vehicle', 'route', 'schedule']
+    return [
+      'type',
+      'photo',
+      'dimensions',
+      'details',
+      'vehicle',
+      'route',
+      'contact',
+      'schedule',
+    ]
   }
   if (type === null) {
     return ['type']
   }
   // letter, courier, valuable, disposal
-  return ['type', 'details', 'vehicle', 'route', 'schedule']
+  return ['type', 'details', 'vehicle', 'route', 'contact', 'schedule']
 }
 
 export function isAddressComplete(address: AddressValue) {

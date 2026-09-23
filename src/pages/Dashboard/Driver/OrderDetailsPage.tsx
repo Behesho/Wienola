@@ -143,11 +143,11 @@ function OrderDetailsPage() {
         <p className="order-details-page__customer-name">
           {order.customer?.full_name || 'Kund_in'}
         </p>
-        {order.customer?.phone && (
+        {(order.contact_phone || order.customer?.phone) && (
           <div className="order-details-page__phone-row">
-            <span>{order.customer.phone}</span>
+            <span>{order.contact_phone || order.customer?.phone}</span>
             <a
-              href={`tel:${order.customer.phone}`}
+              href={`tel:${order.contact_phone || order.customer?.phone}`}
               className="order-details-page__call"
             >
               <PhoneIcon />

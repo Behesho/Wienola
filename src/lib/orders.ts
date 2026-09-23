@@ -39,6 +39,8 @@ function toDbRow(customerId: string, data: OrderFormData) {
     scheduled_date: data.express ? null : data.date || null,
     scheduled_time: data.express ? null : data.time || null,
     express: data.express,
+    contact_phone: data.contactPhone || null,
+    amount: data.amount ? Number(data.amount) : null,
   }
 }
 
