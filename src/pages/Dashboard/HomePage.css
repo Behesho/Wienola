@@ -4,3 +4,48 @@
   font-weight: 800;
   color: var(--color-text);
 }
+
+.home-page__history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.home-page__history-item {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.home-page__history-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.home-page__history-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.home-page__history-type {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.home-page__history-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-brand);
+}
+
+.home-page__history-route {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
