@@ -1,0 +1,192 @@
+.order-details-page__title {
+  margin: 4px 0 20px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.order-details-page__empty {
+  margin: 0;
+  padding: 60px 0;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--color-text-secondary);
+}
+
+.order-details-section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+
+.order-details-section__title {
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+}
+
+.order-details-page__customer-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.order-details-page__phone-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.order-details-page__call {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--color-brand);
+  color: var(--color-brand-ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.order-details-page__call svg {
+  width: 15px;
+  height: 15px;
+}
+
+.order-details-page__schedule {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.order-details-page__route {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.order-details-page__address {
+  padding-left: 14px;
+  border-left: 2px solid var(--color-brand);
+}
+
+.order-details-page__address-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.order-details-page__address p {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.4;
+}
+
+.order-details-page__payment,
+.order-details-page__info {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 14px;
+}
+
+.order-details-page__payment dt,
+.order-details-page__info dt {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.order-details-page__payment dd,
+.order-details-page__info dd {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: right;
+}
+
+.order-details-page__vehicle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.order-details-page__vehicle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.order-details-page__badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.order-details-page__badge--paid {
+  background: rgba(var(--color-brand-rgb), 0.12);
+  color: var(--color-brand);
+  border-color: transparent;
+}
+
+.order-details-page__photo {
+  width: 100%;
+  border-radius: 14px;
+  margin-top: 14px;
+  display: block;
+}
+
+.order-details-page__error {
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  color: var(--color-danger);
+  text-align: center;
+}
+
+.order-details-page__cta {
+  width: 100%;
+  height: 50px;
+  border-radius: 12px;
+  border: none;
+  background: var(--color-brand);
+  color: var(--color-brand-ink);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: filter 150ms ease;
+}
+
+.order-details-page__cta:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.order-details-page__cta:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -115,6 +115,11 @@
   transform: scale(0.98);
 }
 
+.new-order-page__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 @keyframes order-step-enter {
   from {
     opacity: 0;

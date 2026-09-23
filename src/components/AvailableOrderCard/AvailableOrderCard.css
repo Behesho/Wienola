@@ -1,0 +1,140 @@
+.available-order-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+
+.available-order-card__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.available-order-card__type {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.available-order-card__time {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.available-order-card__route {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.available-order-card__arrow {
+  color: var(--color-brand);
+  font-weight: 700;
+}
+
+.available-order-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.available-order-card__vehicle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.available-order-card__vehicle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.available-order-card__amount {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.available-order-card__badge {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.available-order-card__badge--paid {
+  background: rgba(var(--color-brand-rgb), 0.12);
+  color: var(--color-brand);
+  border-color: transparent;
+}
+
+.available-order-card__error {
+  margin: 12px 0 0;
+  font-size: 0.78rem;
+  color: var(--color-danger);
+}
+
+.available-order-card__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.available-order-card__view {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: border-color 150ms ease;
+}
+
+.available-order-card__view:hover {
+  border-color: var(--color-brand);
+}
+
+.available-order-card__accept {
+  flex: 1;
+  height: 44px;
+  border-radius: 10px;
+  border: none;
+  background: var(--color-brand);
+  color: var(--color-brand-ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 150ms ease;
+}
+
+.available-order-card__accept:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.available-order-card__accept:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

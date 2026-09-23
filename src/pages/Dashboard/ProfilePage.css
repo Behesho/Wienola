@@ -35,3 +35,20 @@
   font-size: 0.85rem;
   color: var(--color-text-secondary);
 }
+
+.profile-page__logout {
+  display: block;
+  margin: 12px 0 0;
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.profile-page__logout:hover {
+  color: var(--color-danger);
+}

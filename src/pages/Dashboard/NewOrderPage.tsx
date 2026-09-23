@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/useAuth'
+import { insertOrder } from '../../lib/orders'
 import { ChevronLeftIcon } from './NewOrder/icons'
 import TransportTypeStep from './NewOrder/TransportTypeStep'
 import PhotoStep from './NewOrder/PhotoStep'
@@ -53,10 +55,12 @@ function validateStep(stepKey: StepKey, data: OrderFormData): string | null {
 
 function NewOrderPage() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [stepIndex, setStepIndex] = useState(0)
   const [data, setData] = useState<OrderFormData>(INITIAL_ORDER_DATA)
   const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   const steps = getStepSequence(data.transportType)
   const currentStep = steps[stepIndex]
@@ -73,18 +77,35 @@ function NewOrderPage() {
     setStepIndex((current) => Math.max(0, current - 1))
   }
 
-  function handleNext() {
+  async function handleNext() {
     const validationError = validateStep(currentStep, data)
     if (validationError) {
       setError(validationError)
       return
     }
     setError(null)
-    if (isLastStep) {
-      setSubmitted(true)
-    } else {
+
+    if (!isLastStep) {
       setStepIndex((current) => current + 1)
+      return
     }
+
+    if (!user) {
+      setError('Bitte melde dich erneut an, um den Auftrag zu veröffentlichen.')
+      return
+    }
+
+    setSubmitting(true)
+    const { error: insertError } = await insertOrder(user.id, data)
+    setSubmitting(false)
+
+    if (insertError) {
+      console.error('Failed to create order:', insertError.message)
+      setError('Auftrag konnte nicht veröffentlicht werden. Bitte versuche es erneut.')
+      return
+    }
+
+    setSubmitted(true)
   }
 
   function renderStep() {
@@ -203,8 +224,13 @@ function NewOrderPage() {
           type="button"
           className="new-order-page__submit"
           onClick={handleNext}
+          disabled={submitting}
         >
-          {isLastStep ? 'Auftrag veröffentlichen' : 'Weiter'}
+          {submitting
+            ? 'Wird veröffentlicht…'
+            : isLastStep
+              ? 'Auftrag veröffentlichen'
+              : 'Weiter'}
         </button>
       </div>
     </div>

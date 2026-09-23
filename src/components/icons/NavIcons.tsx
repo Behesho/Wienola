@@ -75,3 +75,39 @@ export function PinIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
+export function BriefcaseIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <rect x="3" y="7.5" width="18" height="12" rx="2" />
+      <path d="M8.5 7.5V6a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v1.5" />
+      <path d="M3 12.5h18" />
+    </svg>
+  )
+}
+
+export function CheckCircleIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="m8.2 12.3 2.6 2.6 5-5.2" />
+    </svg>
+  )
+}
+
+export function PhoneIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <path d="M5.5 4.5h3l1.3 4.2-2 1.6a11 11 0 0 0 5.9 5.9l1.6-2 4.2 1.3v3a1.5 1.5 0 0 1-1.6 1.5A15.5 15.5 0 0 1 4 5.6a1.5 1.5 0 0 1 1.5-1.1Z" />
+    </svg>
+  )
+}
+
+export function BellIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...iconProps(props)}>
+      <path d="M6 10a6 6 0 0 1 12 0c0 4 1.3 5.5 1.5 6H4.5C4.7 15.5 6 14 6 10Z" />
+      <path d="M10 19a2 2 0 0 0 4 0" />
+    </svg>
+  )
+}
