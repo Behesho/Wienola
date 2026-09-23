@@ -1,6 +1,6 @@
 import { supabase } from './supabase'
 import type { OrderFormData } from '../pages/Dashboard/NewOrder/types'
-import type { Order, OrderStatus, OrderWithCustomer } from '../types/order'
+import type { Order, OrderStatus, OrderWithCustomer, OrderWithDriver } from '../types/order'
 
 const ACTIVE_STATUSES: OrderStatus[] = [
   'accepted',
@@ -10,6 +10,7 @@ const ACTIVE_STATUSES: OrderStatus[] = [
 ]
 
 const CUSTOMER_SELECT = '*, customer:profiles!customer_id(full_name, phone)'
+const DRIVER_SELECT = '*, driver:profiles!driver_id(full_name, phone)'
 
 function toDbRow(customerId: string, data: OrderFormData) {
   return {
@@ -50,6 +51,15 @@ export async function insertOrder(customerId: string, data: OrderFormData) {
     .insert(toDbRow(customerId, data))
     .select()
     .single<Order>()
+}
+
+export async function fetchMyOrders(customerId: string) {
+  return supabase
+    .from('orders')
+    .select(DRIVER_SELECT)
+    .eq('customer_id', customerId)
+    .order('created_at', { ascending: false })
+    .returns<OrderWithDriver[]>()
 }
 
 export async function fetchOpenOrders() {

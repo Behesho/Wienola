@@ -55,6 +55,14 @@ export interface OrderWithCustomer extends Order {
   } | null
 }
 
+/** Order joined with the assigned driver's profile, for customer-facing views. */
+export interface OrderWithDriver extends Order {
+  driver: {
+    full_name: string | null
+    phone: string | null
+  } | null
+}
+
 export const STATUS_LABELS: Record<OrderStatus, string> = {
   open: 'Offen',
   accepted: 'Angenommen',
