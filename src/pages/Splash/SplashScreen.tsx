@@ -2,13 +2,15 @@ import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import logoIcon from '../../assets/logo-icon.png'
 import { useSplashSequence } from '../../hooks/useSplashSequence'
+import { useAuth } from '../../context/useAuth'
 import './SplashScreen.css'
 
 function SplashScreen() {
   const navigate = useNavigate()
+  const { session } = useAuth()
   const handleComplete = useCallback(
-    () => navigate('/login', { replace: true }),
-    [navigate],
+    () => navigate(session ? '/dashboard' : '/login', { replace: true }),
+    [navigate, session],
   )
   const { exiting } = useSplashSequence(handleComplete)
 

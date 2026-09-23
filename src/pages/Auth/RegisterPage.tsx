@@ -1,6 +1,8 @@
 import { useState, type FormEvent, type SVGProps } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import BrandLogo from '../../components/BrandLogo/BrandLogo'
+import { supabase } from '../../lib/supabase'
+import { mapSignUpError } from '../../lib/authErrors'
 import './Auth.css'
 
 type Role = 'customer' | 'provider'
@@ -52,9 +54,16 @@ function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [agreed, setAgreed] = useState(false)
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    if (!role) {
+      setError('Bitte wähle aus, ob du Kunde_in oder Dienstleister bist.')
+      return
+    }
 
     if (password !== confirmPassword) {
       setError('Die Passwörter stimmen nicht überein.')
@@ -62,7 +71,34 @@ function RegisterPage() {
     }
 
     setError('')
-    navigate('/dashboard')
+    setNotice('')
+    setSubmitting(true)
+
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
+          role: role === 'provider' ? 'dienstleister' : 'customer',
+        },
+      },
+    })
+
+    setSubmitting(false)
+
+    if (signUpError) {
+      setError(mapSignUpError(signUpError.message))
+      return
+    }
+
+    if (data.session) {
+      navigate('/dashboard')
+    } else {
+      setNotice(
+        'Fast geschafft! Bitte bestätige deine E-Mail-Adresse, um dich anzumelden.',
+      )
+    }
   }
 
   return (
@@ -155,7 +191,6 @@ function RegisterPage() {
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
             />
-            {error && <span className="auth__error">{error}</span>}
           </label>
 
           <label className="auth__checkbox">
@@ -178,8 +213,15 @@ function RegisterPage() {
             </span>
           </label>
 
-          <button type="submit" className="auth__submit" disabled={!agreed}>
-            Registrieren
+          {error && <p className="auth__error">{error}</p>}
+          {notice && <p className="auth__notice">{notice}</p>}
+
+          <button
+            type="submit"
+            className="auth__submit"
+            disabled={!agreed || submitting}
+          >
+            {submitting ? 'Wird registriert…' : 'Registrieren'}
           </button>
         </form>
 

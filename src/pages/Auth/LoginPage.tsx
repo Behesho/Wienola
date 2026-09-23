@@ -1,15 +1,35 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import BrandLogo from '../../components/BrandLogo/BrandLogo'
+import { supabase } from '../../lib/supabase'
+import { mapSignInError } from '../../lib/authErrors'
 import './Auth.css'
 
 function LoginPage() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    setError('')
+    setSubmitting(true)
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    setSubmitting(false)
+
+    if (signInError) {
+      setError(mapSignInError(signInError.message))
+      return
+    }
+
     navigate('/dashboard')
   }
 
@@ -48,8 +68,10 @@ function LoginPage() {
             />
           </label>
 
-          <button type="submit" className="auth__submit">
-            Anmelden
+          {error && <p className="auth__error">{error}</p>}
+
+          <button type="submit" className="auth__submit" disabled={submitting}>
+            {submitting ? 'Wird angemeldet…' : 'Anmelden'}
           </button>
         </form>
 
