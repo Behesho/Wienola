@@ -84,7 +84,6 @@ export type StepKey =
   | 'details'
   | 'vehicle'
   | 'route'
-  | 'contact'
   | 'schedule'
 
 export const STEP_LABELS: Record<StepKey, string> = {
@@ -95,7 +94,6 @@ export const STEP_LABELS: Record<StepKey, string> = {
   details: 'Details',
   vehicle: 'Fahrzeug',
   route: 'Strecke',
-  contact: 'Kontakt',
   schedule: 'Termin',
 }
 
@@ -103,11 +101,11 @@ export const STEP_LABELS: Record<StepKey, string> = {
  * The step sequence depends on the selected transport type — some
  * categories skip photo/dimensions entirely, "Kompletter Umzug" swaps
  * the details step for floor/elevator questions. Every flow ends with
- * contact (phone + price) then schedule.
+ * the schedule step.
  */
 export function getStepSequence(type: TransportType | null): StepKey[] {
   if (type === 'moving') {
-    return ['type', 'moving', 'vehicle', 'route', 'contact', 'schedule']
+    return ['type', 'moving', 'vehicle', 'route', 'schedule']
   }
   if (type === 'multiple' || type === 'single' || type === 'other') {
     return [
@@ -117,7 +115,6 @@ export function getStepSequence(type: TransportType | null): StepKey[] {
       'details',
       'vehicle',
       'route',
-      'contact',
       'schedule',
     ]
   }
@@ -125,7 +122,7 @@ export function getStepSequence(type: TransportType | null): StepKey[] {
     return ['type']
   }
   // letter, courier, valuable, disposal
-  return ['type', 'details', 'vehicle', 'route', 'contact', 'schedule']
+  return ['type', 'details', 'vehicle', 'route', 'schedule']
 }
 
 export function isAddressComplete(address: AddressValue) {

@@ -10,7 +10,6 @@ import MovingDetailsStep from './NewOrder/MovingDetailsStep'
 import DetailsStep from './NewOrder/DetailsStep'
 import VehicleStep from './NewOrder/VehicleStep'
 import RouteStep from './NewOrder/RouteStep'
-import ContactStep from './NewOrder/ContactStep'
 import ScheduleStep from './NewOrder/ScheduleStep'
 import SuccessScreen from './NewOrder/SuccessScreen'
 import {
@@ -45,10 +44,6 @@ function validateStep(stepKey: StepKey, data: OrderFormData): string | null {
       return isAddressComplete(data.pickup) && isAddressComplete(data.destination)
         ? null
         : 'Bitte vervollständige Abholung und Ziel.'
-    case 'contact':
-      return data.contactPhone.trim()
-        ? null
-        : 'Bitte gib deine Telefonnummer ein.'
     case 'schedule':
       if (!data.express && !(data.date && data.time)) {
         return 'Bitte wähle einen Termin oder „So schnell wie möglich“.'
@@ -63,7 +58,8 @@ function NewOrderPage() {
   const navigate = useNavigate()
   const { user, profile } = useAuth()
   const [stepIndex, setStepIndex] = useState(0)
-  // The phone number given at registration is prefilled on the Kontakt step.
+  // No contact step: the driver reaches the customer through the phone number
+  // given at registration, stored on the order as contact_phone.
   const [data, setData] = useState<OrderFormData>({
     ...INITIAL_ORDER_DATA,
     contactPhone: profile?.phone ?? '',
@@ -194,13 +190,6 @@ function NewOrderPage() {
           <RouteStep
             pickup={data.pickup}
             destination={data.destination}
-            onChange={update}
-          />
-        )
-      case 'contact':
-        return (
-          <ContactStep
-            contactPhone={data.contactPhone}
             onChange={update}
           />
         )
