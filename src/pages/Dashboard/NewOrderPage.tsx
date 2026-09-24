@@ -45,16 +45,10 @@ function validateStep(stepKey: StepKey, data: OrderFormData): string | null {
       return isAddressComplete(data.pickup) && isAddressComplete(data.destination)
         ? null
         : 'Bitte vervollständige Abholung und Ziel.'
-    case 'contact': {
-      if (!data.contactPhone.trim()) {
-        return 'Bitte gib deine Telefonnummer ein.'
-      }
-      const parsedAmount = Number(data.amount)
-      if (!data.amount || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
-        return 'Bitte gib einen gültigen Auftragsbetrag ein.'
-      }
-      return null
-    }
+    case 'contact':
+      return data.contactPhone.trim()
+        ? null
+        : 'Bitte gib deine Telefonnummer ein.'
     case 'schedule':
       if (!data.express && !(data.date && data.time)) {
         return 'Bitte wähle einen Termin oder „So schnell wie möglich“.'
@@ -67,9 +61,13 @@ function validateStep(stepKey: StepKey, data: OrderFormData): string | null {
 
 function NewOrderPage() {
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const [stepIndex, setStepIndex] = useState(0)
-  const [data, setData] = useState<OrderFormData>(INITIAL_ORDER_DATA)
+  // The phone number given at registration is prefilled on the Kontakt step.
+  const [data, setData] = useState<OrderFormData>({
+    ...INITIAL_ORDER_DATA,
+    contactPhone: profile?.phone ?? '',
+  })
   const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -203,7 +201,6 @@ function NewOrderPage() {
         return (
           <ContactStep
             contactPhone={data.contactPhone}
-            amount={data.amount}
             onChange={update}
           />
         )

@@ -47,9 +47,7 @@ function toDbRow(customerId: string, data: OrderFormData) {
     scheduled_time: data.express ? null : data.time || null,
     express: data.express,
     payer: data.payer,
-    contact_phone: data.contactPhone || null,
-    amount: data.amount ? Number(data.amount) : null,
-  }
+    contact_phone: data.contactPhone || null,  }
 }
 
 export async function insertOrder(customerId: string, data: OrderFormData) {

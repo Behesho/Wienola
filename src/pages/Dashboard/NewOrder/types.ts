@@ -53,7 +53,6 @@ export interface OrderFormData {
   destinationFloor: string
   destinationElevator: ElevatorAnswer
   contactPhone: string
-  amount: string
 }
 
 export const INITIAL_ORDER_DATA: OrderFormData = {
@@ -75,7 +74,6 @@ export const INITIAL_ORDER_DATA: OrderFormData = {
   destinationFloor: '',
   destinationElevator: null,
   contactPhone: '',
-  amount: '',
 }
 
 export type StepKey =
