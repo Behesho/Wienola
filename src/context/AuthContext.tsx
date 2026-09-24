@@ -8,6 +8,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const activeRef = useRef(true)
+  // Which user's profile is currently loaded — lets a fresh sign-in show the
+  // loading state until the role is known (so a driver never sees a flash of
+  // the customer dashboard), without flashing it on routine token refreshes.
+  const loadedProfileUserIdRef = useRef<string | null>(null)
 
   useEffect(() => {
     activeRef.current = true
@@ -22,8 +26,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!activeRef.current) return
       if (error) {
         console.error('Failed to load profile:', error.message)
+        loadedProfileUserIdRef.current = null
         setProfile(null)
       } else {
+        loadedProfileUserIdRef.current = userId
         setProfile(data)
       }
       setLoading(false)
@@ -45,8 +51,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!activeRef.current) return
       setSession(newSession)
       if (newSession?.user) {
+        if (loadedProfileUserIdRef.current !== newSession.user.id) {
+          setLoading(true)
+        }
         loadProfile(newSession.user.id)
       } else {
+        loadedProfileUserIdRef.current = null
         setProfile(null)
         setLoading(false)
       }

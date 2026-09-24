@@ -12,7 +12,7 @@ function ProfilePage() {
 
   async function handleLogout() {
     await signOut()
-    navigate('/login')
+    navigate('/login', { replace: true })
   }
 
   return (

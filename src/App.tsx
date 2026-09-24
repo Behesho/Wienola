@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import SplashScreen from './pages/Splash/SplashScreen'
 import LoginPage from './pages/Auth/LoginPage'
 import RegisterPage from './pages/Auth/RegisterPage'
@@ -13,6 +13,7 @@ import MyJobsPage from './pages/Dashboard/Driver/MyJobsPage'
 import CompletedPage from './pages/Dashboard/Driver/CompletedPage'
 import OrderDetailsPage from './pages/Dashboard/Driver/OrderDetailsPage'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
+import PublicOnlyRoute from './components/ProtectedRoute/PublicOnlyRoute'
 import { useAuth } from './context/useAuth'
 
 function App() {
@@ -20,35 +21,41 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<SplashScreen />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+      {/* Public: only /login and /register — and only for signed-out users. */}
+      <Route element={<PublicOnlyRoute />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
 
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardLayout />
-          </ProtectedRoute>
-        }
-      >
-        {role === 'dienstleister' ? (
-          <>
-            <Route index element={<DriverHomePage />} />
-            <Route path="my-jobs" element={<MyJobsPage />} />
-            <Route path="completed" element={<CompletedPage />} />
-            <Route path="jobs/:orderId" element={<OrderDetailsPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-          </>
-        ) : (
-          <>
-            <Route index element={<HomePage />} />
-            <Route path="search" element={<SearchPage />} />
-            <Route path="new-order" element={<NewOrderPage />} />
-            <Route path="orders" element={<OrdersPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-          </>
-        )}
+      {/* Everything else requires a valid session. */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<SplashScreen />} />
+
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          {role === 'dienstleister' ? (
+            <>
+              <Route index element={<DriverHomePage />} />
+              <Route path="my-jobs" element={<MyJobsPage />} />
+              <Route path="completed" element={<CompletedPage />} />
+              <Route path="jobs/:orderId" element={<OrderDetailsPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </>
+          ) : (
+            <>
+              <Route index element={<HomePage />} />
+              <Route path="search" element={<SearchPage />} />
+              <Route path="new-order" element={<NewOrderPage />} />
+              <Route path="orders" element={<OrdersPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </>
+          )}
+        </Route>
+
+        {/* Any other URL: signed-out users are bounced to /login by the
+            guard above; signed-in users land on their dashboard. */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Route>
     </Routes>
   )
