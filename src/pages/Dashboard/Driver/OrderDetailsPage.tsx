@@ -13,6 +13,8 @@ import {
 import { PhoneIcon } from '../../../components/icons/NavIcons'
 import {
   formatAmount,
+  formatStockUnit,
+  formatStreetLine,
   PAYER_LABELS,
   PAYMENT_STATUS_LABELS,
   STATUS_ADVANCE,
@@ -167,12 +169,31 @@ function OrderDetailsPage() {
         <div className="order-details-page__route">
           <div className="order-details-page__address">
             <span className="order-details-page__address-label">Abholung</span>
-            {order.pickup_street && <p>{order.pickup_street}</p>}
+            {(order.pickup_street || order.pickup_house_number) && (
+              <p>
+                {formatStreetLine(order.pickup_street, order.pickup_house_number)}
+              </p>
+            )}
+            {formatStockUnit(order.pickup_stock, order.pickup_unit) && (
+              <p>{formatStockUnit(order.pickup_stock, order.pickup_unit)}</p>
+            )}
             {pickupPlace && <p>{pickupPlace}</p>}
           </div>
           <div className="order-details-page__address">
             <span className="order-details-page__address-label">Zustellung</span>
-            {order.destination_street && <p>{order.destination_street}</p>}
+            {(order.destination_street || order.destination_house_number) && (
+              <p>
+                {formatStreetLine(
+                  order.destination_street,
+                  order.destination_house_number,
+                )}
+              </p>
+            )}
+            {formatStockUnit(order.destination_stock, order.destination_unit) && (
+              <p>
+                {formatStockUnit(order.destination_stock, order.destination_unit)}
+              </p>
+            )}
             {destinationPlace && <p>{destinationPlace}</p>}
           </div>
         </div>

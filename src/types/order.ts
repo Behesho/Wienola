@@ -27,9 +27,15 @@ export interface Order {
   pickup_district: string | null
   pickup_custom_location: string | null
   pickup_street: string | null
+  pickup_house_number: string | null
+  pickup_stock: string | null
+  pickup_unit: string | null
   destination_district: string | null
   destination_custom_location: string | null
   destination_street: string | null
+  destination_house_number: string | null
+  destination_stock: string | null
+  destination_unit: string | null
   pickup_floor: string | null
   pickup_elevator: boolean | null
   destination_floor: string | null
@@ -117,13 +123,22 @@ export function formatPlace(
   return (district === 'other' ? customLocation : district) || '–'
 }
 
-export function formatAddress(
-  district: string | null,
-  customLocation: string | null,
+/** "Hauptstraße 12" — street and house number on one line. */
+export function formatStreetLine(
   street: string | null,
+  houseNumber: string | null,
 ): string {
-  const place = district === 'other' ? customLocation : district
-  return [street, place].filter(Boolean).join('\n')
+  return [street, houseNumber].filter(Boolean).join(' ')
+}
+
+/** "Stock 3 · Tür 12" — empty when neither optional part was given. */
+export function formatStockUnit(
+  stock: string | null,
+  unit: string | null,
+): string {
+  return [stock && `Stock ${stock}`, unit && `Tür ${unit}`]
+    .filter(Boolean)
+    .join(' · ')
 }
 
 export function formatAmount(amount: number | null): string | null {

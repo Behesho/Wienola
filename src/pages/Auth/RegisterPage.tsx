@@ -49,6 +49,7 @@ function RegisterPage() {
   const navigate = useNavigate()
   const [role, setRole] = useState<Role | null>(null)
   const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -62,6 +63,11 @@ function RegisterPage() {
 
     if (!role) {
       setError('Bitte wähle aus, ob du Kunde_in oder Dienstleister bist.')
+      return
+    }
+
+    if (!phone.trim()) {
+      setError('Bitte gib deine Telefonnummer ein.')
       return
     }
 
@@ -80,6 +86,7 @@ function RegisterPage() {
       options: {
         data: {
           full_name: name,
+          phone: phone.trim(),
           role: role === 'provider' ? 'dienstleister' : 'customer',
         },
       },
@@ -142,6 +149,7 @@ function RegisterPage() {
           </div>
         </div>
 
+        {role && (
         <form className="auth__form" onSubmit={handleSubmit} noValidate>
           <label className="auth__field">
             <span>Name</span>
@@ -152,6 +160,18 @@ function RegisterPage() {
               required
               value={name}
               onChange={(event) => setName(event.target.value)}
+            />
+          </label>
+
+          <label className="auth__field">
+            <span>Telefonnummer</span>
+            <input
+              type="tel"
+              autoComplete="tel"
+              placeholder="+43 660 1234567"
+              required
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
             />
           </label>
 
@@ -224,6 +244,7 @@ function RegisterPage() {
             {submitting ? 'Wird registriert…' : 'Registrieren'}
           </button>
         </form>
+        )}
 
         <p className="auth__switch">
           Bereits ein Konto? <Link to="/login">Jetzt anmelden</Link>

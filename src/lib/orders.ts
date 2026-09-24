@@ -26,9 +26,15 @@ function toDbRow(customerId: string, data: OrderFormData) {
     pickup_district: data.pickup.district || null,
     pickup_custom_location: data.pickup.customLocation || null,
     pickup_street: data.pickup.street || null,
+    pickup_house_number: data.pickup.houseNumber || null,
+    pickup_stock: data.pickup.stock || null,
+    pickup_unit: data.pickup.unit || null,
     destination_district: data.destination.district || null,
     destination_custom_location: data.destination.customLocation || null,
     destination_street: data.destination.street || null,
+    destination_house_number: data.destination.houseNumber || null,
+    destination_stock: data.destination.stock || null,
+    destination_unit: data.destination.unit || null,
     pickup_floor: data.pickupFloor || null,
     pickup_elevator:
       data.pickupElevator === null ? null : data.pickupElevator === 'yes',
@@ -40,6 +46,7 @@ function toDbRow(customerId: string, data: OrderFormData) {
     scheduled_date: data.express ? null : data.date || null,
     scheduled_time: data.express ? null : data.time || null,
     express: data.express,
+    payer: data.payer,
     contact_phone: data.contactPhone || null,
     amount: data.amount ? Number(data.amount) : null,
   }

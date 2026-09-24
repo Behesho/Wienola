@@ -13,6 +13,24 @@
   color: var(--color-text);
 }
 
+.address-group__row {
+  display: flex;
+  gap: 12px;
+}
+
+.address-group__row > .route-step__field {
+  flex: 1;
+  min-width: 0;
+}
+
+.address-group__row > .address-group__street {
+  flex: 2;
+}
+
+.route-step__field input {
+  min-width: 0;
+}
+
 .route-step__field {
   display: flex;
   flex-direction: column;

@@ -16,13 +16,23 @@ export interface AddressValue {
   district: string
   customLocation: string
   street: string
+  houseNumber: string
+  /** Stock (floor) — optional. */
+  stock: string
+  /** Wohnung / Tür — optional. */
+  unit: string
 }
 
 export const EMPTY_ADDRESS: AddressValue = {
   district: '',
   customLocation: '',
   street: '',
+  houseNumber: '',
+  stock: '',
+  unit: '',
 }
+
+export type PayerChoice = 'pickup' | 'destination'
 
 export interface OrderFormData {
   transportType: TransportType | null
@@ -37,6 +47,7 @@ export interface OrderFormData {
   date: string
   time: string
   express: boolean
+  payer: PayerChoice | null
   pickupFloor: string
   pickupElevator: ElevatorAnswer
   destinationFloor: string
@@ -58,6 +69,7 @@ export const INITIAL_ORDER_DATA: OrderFormData = {
   date: '',
   time: '',
   express: false,
+  payer: null,
   pickupFloor: '',
   pickupElevator: null,
   destinationFloor: '',
@@ -123,5 +135,9 @@ export function isAddressComplete(address: AddressValue) {
     address.district === 'other'
       ? address.customLocation.trim().length > 0
       : address.district.trim().length > 0
-  return hasLocation && address.street.trim().length > 0
+  return (
+    hasLocation &&
+    address.street.trim().length > 0 &&
+    address.houseNumber.trim().length > 0
+  )
 }

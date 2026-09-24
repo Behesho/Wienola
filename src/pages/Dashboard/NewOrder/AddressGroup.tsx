@@ -55,15 +55,49 @@ function AddressGroup({ heading, value, onChange }: AddressGroupProps) {
         </label>
       )}
 
-      <label className="route-step__field">
-        <span>Straße und Hausnummer</span>
-        <input
-          type="text"
-          placeholder="z. B. Hauptstraße 12"
-          value={value.street}
-          onChange={(event) => patch({ street: event.target.value })}
-        />
-      </label>
+      <div className="address-group__row">
+        <label className="route-step__field address-group__street">
+          <span>Straße</span>
+          <input
+            type="text"
+            placeholder="z. B. Hauptstraße"
+            value={value.street}
+            onChange={(event) => patch({ street: event.target.value })}
+          />
+        </label>
+
+        <label className="route-step__field address-group__number">
+          <span>Hausnummer</span>
+          <input
+            type="text"
+            placeholder="12"
+            value={value.houseNumber}
+            onChange={(event) => patch({ houseNumber: event.target.value })}
+          />
+        </label>
+      </div>
+
+      <div className="address-group__row">
+        <label className="route-step__field">
+          <span>Stock (optional)</span>
+          <input
+            type="text"
+            placeholder="z. B. 3"
+            value={value.stock}
+            onChange={(event) => patch({ stock: event.target.value })}
+          />
+        </label>
+
+        <label className="route-step__field">
+          <span>Wohnung / Tür (optional)</span>
+          <input
+            type="text"
+            placeholder="z. B. 12"
+            value={value.unit}
+            onChange={(event) => patch({ unit: event.target.value })}
+          />
+        </label>
+      </div>
     </div>
   )
 }

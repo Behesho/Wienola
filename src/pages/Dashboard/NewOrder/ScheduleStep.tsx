@@ -1,18 +1,32 @@
 import { BoltIcon, CalendarIcon, ClockIcon } from './icons'
+import type { PayerChoice } from './types'
 import './ScheduleStep.css'
+
+const PAYER_OPTIONS: { value: PayerChoice; label: string }[] = [
+  { value: 'pickup', label: 'Abholadresse' },
+  { value: 'destination', label: 'Zustelladresse' },
+]
 
 interface ScheduleStepProps {
   date: string
   time: string
   express: boolean
+  payer: PayerChoice | null
   onChange: (patch: {
     date?: string
     time?: string
     express?: boolean
+    payer?: PayerChoice
   }) => void
 }
 
-function ScheduleStep({ date, time, express, onChange }: ScheduleStepProps) {
+function ScheduleStep({
+  date,
+  time,
+  express,
+  payer,
+  onChange,
+}: ScheduleStepProps) {
   return (
     <div className="schedule-step">
       <h2 className="order-step__heading">Wunschtermin</h2>
@@ -65,6 +79,23 @@ function ScheduleStep({ date, time, express, onChange }: ScheduleStepProps) {
           </span>
         </span>
       </button>
+
+      <div className="schedule-step__payer">
+        <span className="schedule-step__payer-title">Wer bezahlt?</span>
+        <div className="schedule-step__payer-options">
+          {PAYER_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              className={`schedule-step__payer-option${payer === option.value ? ' schedule-step__payer-option--selected' : ''}`}
+              aria-pressed={payer === option.value}
+              onClick={() => onChange({ payer: option.value })}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

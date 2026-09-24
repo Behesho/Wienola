@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/useAuth'
 import { insertOrder } from '../../lib/orders'
@@ -20,6 +20,7 @@ import {
   STEP_LABELS,
   type OrderFormData,
   type StepKey,
+  type TransportType,
 } from './NewOrder/types'
 import './NewOrderPage.css'
 
@@ -55,10 +56,10 @@ function validateStep(stepKey: StepKey, data: OrderFormData): string | null {
       return null
     }
     case 'schedule':
-      if (data.express) return null
-      return data.date && data.time
-        ? null
-        : 'Bitte wähle einen Termin oder „So schnell wie möglich“.'
+      if (!data.express && !(data.date && data.time)) {
+        return 'Bitte wähle einen Termin oder „So schnell wie möglich“.'
+      }
+      return data.payer ? null : 'Bitte gib an, wer bezahlt.'
     default:
       return null
   }
@@ -73,6 +74,15 @@ function NewOrderPage() {
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
+  const advanceTimer = useRef<number | null>(null)
+
+  useEffect(
+    () => () => {
+      if (advanceTimer.current !== null) window.clearTimeout(advanceTimer.current)
+    },
+    [],
+  )
+
   const steps = getStepSequence(data.transportType)
   const currentStep = steps[stepIndex]
   // The type step is only "last" in the trivial (type not yet chosen) case —
@@ -81,6 +91,19 @@ function NewOrderPage() {
 
   function update(patch: Partial<OrderFormData>) {
     setData((prev) => ({ ...prev, ...patch }))
+    setError(null)
+  }
+
+  // Picking a card is the whole step: highlight it, then move on shortly
+  // after so the green selected state is visible.
+  function handleTypeSelect(transportType: TransportType) {
+    update({ transportType })
+    setError(null)
+    if (advanceTimer.current !== null) return
+    advanceTimer.current = window.setTimeout(() => {
+      advanceTimer.current = null
+      setStepIndex(1)
+    }, 220)
   }
 
   function handleBack() {
@@ -125,7 +148,7 @@ function NewOrderPage() {
         return (
           <TransportTypeStep
             transportType={data.transportType}
-            onChange={(transportType) => update({ transportType })}
+            onChange={handleTypeSelect}
           />
         )
       case 'photo':
@@ -190,6 +213,7 @@ function NewOrderPage() {
             date={data.date}
             time={data.time}
             express={data.express}
+            payer={data.payer}
             onChange={update}
           />
         )
@@ -237,21 +261,23 @@ function NewOrderPage() {
         {renderStep()}
       </div>
 
-      <div className="new-order-page__footer">
-        {error && <p className="new-order-page__error">{error}</p>}
-        <button
-          type="button"
-          className="new-order-page__submit"
-          onClick={handleNext}
-          disabled={submitting}
-        >
-          {submitting
-            ? 'Wird veröffentlicht…'
-            : isLastStep
-              ? 'Auftrag veröffentlichen'
-              : 'Weiter'}
-        </button>
-      </div>
+      {currentStep !== 'type' && (
+        <div className="new-order-page__footer">
+          {error && <p className="new-order-page__error">{error}</p>}
+          <button
+            type="button"
+            className="new-order-page__submit"
+            onClick={handleNext}
+            disabled={submitting}
+          >
+            {submitting
+              ? 'Wird veröffentlicht…'
+              : isLastStep
+                ? 'Auftrag veröffentlichen'
+                : 'Weiter'}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

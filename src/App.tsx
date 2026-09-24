@@ -2,6 +2,8 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import SplashScreen from './pages/Splash/SplashScreen'
 import LoginPage from './pages/Auth/LoginPage'
 import RegisterPage from './pages/Auth/RegisterPage'
+import ForgotPasswordPage from './pages/Auth/ForgotPasswordPage'
+import ResetPasswordPage from './pages/Auth/ResetPasswordPage'
 import DashboardLayout from './layouts/DashboardLayout'
 import HomePage from './pages/Dashboard/HomePage'
 import SearchPage from './pages/Dashboard/SearchPage'
@@ -25,7 +27,12 @@ function App() {
       <Route element={<PublicOnlyRoute />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       </Route>
+
+      {/* The e-mail link arrives with a recovery session, so this page must
+          not be behind PublicOnlyRoute. */}
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* Everything else requires a valid session. */}
       <Route element={<ProtectedRoute />}>

@@ -235,3 +235,16 @@
 .auth__switch a:hover {
   text-decoration: underline;
 }
+
+.auth__forgot {
+  align-self: flex-end;
+  margin-top: -6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-brand);
+  text-decoration: none;
+}
+
+.auth__forgot:hover {
+  text-decoration: underline;
+}

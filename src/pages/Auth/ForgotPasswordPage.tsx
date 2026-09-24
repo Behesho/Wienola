@@ -1,36 +1,41 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import BrandLogo from '../../components/BrandLogo/BrandLogo'
 import { supabase } from '../../lib/supabase'
-import { mapSignInError } from '../../lib/authErrors'
 import './Auth.css'
 
-function LoginPage() {
-  const navigate = useNavigate()
+function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     setError('')
+    setNotice('')
     setSubmitting(true)
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+      email.trim(),
+      { redirectTo: `${window.location.origin}/reset-password` },
+    )
 
     setSubmitting(false)
 
-    if (signInError) {
-      setError(mapSignInError(signInError.message))
+    if (resetError) {
+      setError(
+        resetError.status === 429
+          ? 'Zu viele Versuche. Bitte warte einen Moment und versuche es erneut.'
+          : 'Der Link konnte nicht gesendet werden. Bitte versuche es erneut.',
+      )
       return
     }
 
-    navigate('/dashboard')
+    setNotice(
+      'Falls ein Konto mit dieser E-Mail-Adresse existiert, haben wir dir einen Link zum Zurücksetzen des Passworts gesendet.',
+    )
   }
 
   return (
@@ -38,9 +43,10 @@ function LoginPage() {
       <div className="auth__card">
         <BrandLogo size="lg" showTagline />
 
-        <h1 className="auth__title">Willkommen zurück</h1>
+        <h1 className="auth__title">Passwort vergessen?</h1>
         <p className="auth__subtitle">
-          Melden Sie sich an, um fortzufahren.
+          Gib deine E-Mail-Adresse ein. Wir senden dir einen Link zum
+          Zurücksetzen.
         </p>
 
         <form className="auth__form" onSubmit={handleSubmit} noValidate>
@@ -56,35 +62,24 @@ function LoginPage() {
             />
           </label>
 
-          <label className="auth__field">
-            <span>Passwort</span>
-            <input
-              type="password"
-              autoComplete="current-password"
-              placeholder="••••••••"
-              required
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </label>
-
-          <Link to="/forgot-password" className="auth__forgot">
-            Passwort vergessen?
-          </Link>
-
           {error && <p className="auth__error">{error}</p>}
+          {notice && <p className="auth__notice">{notice}</p>}
 
-          <button type="submit" className="auth__submit" disabled={submitting}>
-            {submitting ? 'Wird angemeldet…' : 'Anmelden'}
+          <button
+            type="submit"
+            className="auth__submit"
+            disabled={submitting || !email.trim()}
+          >
+            {submitting ? 'Wird gesendet…' : 'Link senden'}
           </button>
         </form>
 
         <p className="auth__switch">
-          Noch kein Konto? <Link to="/register">Jetzt registrieren</Link>
+          Zurück zur <Link to="/login">Anmeldung</Link>
         </p>
       </div>
     </div>
   )
 }
 
-export default LoginPage
+export default ForgotPasswordPage
