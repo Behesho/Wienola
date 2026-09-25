@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchCompletedJobs } from '../../lib/orders'
+import { getOrderPrice } from '../../lib/pricing'
 import {
   DATE_PRESET_LABELS,
   getPresetRange,
@@ -36,7 +37,7 @@ function EarningsSummary({ driverId }: EarningsSummaryProps) {
       } else {
         const sum = (data ?? [])
           .filter((order) => order.payment_status === 'paid')
-          .reduce((acc, order) => acc + (order.amount ?? 0), 0)
+          .reduce((acc, order) => acc + (getOrderPrice(order) ?? 0), 0)
         setTotal(sum)
       }
       setLoading(false)

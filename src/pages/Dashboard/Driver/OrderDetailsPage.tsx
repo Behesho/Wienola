@@ -4,6 +4,7 @@ import { useAuth } from '../../../context/useAuth'
 import { acceptOrder, advanceOrderStatus, fetchOrderById } from '../../../lib/orders'
 import { acknowledgeNewOrders } from '../../../lib/orderNotifications'
 import { formatDateTime } from '../../../lib/formatDate'
+import { getOrderPrice } from '../../../lib/pricing'
 import {
   BikeIcon,
   CarIcon,
@@ -126,7 +127,7 @@ function OrderDetailsPage() {
   }
 
   const VehicleIcon = order.vehicle ? VEHICLE_ICONS[order.vehicle] : null
-  const amount = formatAmount(order.amount)
+  const amount = formatAmount(getOrderPrice(order))
   const advance = STATUS_ADVANCE[order.status]
   const pickupPlace =
     order.pickup_district === 'other'
@@ -209,7 +210,7 @@ function OrderDetailsPage() {
           )}
           {amount && (
             <>
-              <dt>Auftragsbetrag</dt>
+              <dt>Preis</dt>
               <dd>{amount}</dd>
             </>
           )}

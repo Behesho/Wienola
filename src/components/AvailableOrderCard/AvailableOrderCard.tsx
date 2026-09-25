@@ -7,6 +7,7 @@ import {
   VanIcon,
 } from '../../pages/Dashboard/NewOrder/icons'
 import { formatDateTime } from '../../lib/formatDate'
+import { getOrderPrice } from '../../lib/pricing'
 import {
   formatAmount,
   formatPlace,
@@ -34,7 +35,7 @@ function AvailableOrderCard({ order, onAccept }: AvailableOrderCardProps) {
   const [accepting, setAccepting] = useState(false)
   const [failed, setFailed] = useState(false)
   const VehicleIcon = order.vehicle ? VEHICLE_ICONS[order.vehicle] : null
-  const amount = formatAmount(order.amount)
+  const amount = formatAmount(getOrderPrice(order))
 
   async function handleAccept() {
     setAccepting(true)

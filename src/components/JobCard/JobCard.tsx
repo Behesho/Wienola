@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { formatDateTime } from '../../lib/formatDate'
+import { getOrderPrice } from '../../lib/pricing'
 import {
   formatAmount,
   formatPlace,
@@ -18,7 +19,7 @@ interface JobCardProps {
 
 function JobCard({ order, actionLabel, onAction }: JobCardProps) {
   const [busy, setBusy] = useState(false)
-  const amount = formatAmount(order.amount)
+  const amount = formatAmount(getOrderPrice(order))
 
   async function handleAction() {
     if (!onAction) return
