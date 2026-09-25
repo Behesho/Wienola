@@ -77,7 +77,7 @@ function NewOrderPage() {
     [],
   )
 
-  const steps = getStepSequence(data.transportType)
+  const steps = getStepSequence(data.transportType, data.vehicle)
   const currentStep = steps[stepIndex]
   // The type step is only "last" in the trivial (type not yet chosen) case —
   // it always leads to more steps once a transport type is selected.
@@ -124,7 +124,11 @@ function NewOrderPage() {
     }
 
     setSubmitting(true)
-    const { error: insertError } = await insertOrder(user.id, data)
+    const { error: insertError } = await insertOrder(user.id, {
+      ...data,
+      // A photo picked before switching to bike/car must not be sent.
+      photo: steps.includes('photo') ? data.photo : null,
+    })
     setSubmitting(false)
 
     if (insertError) {

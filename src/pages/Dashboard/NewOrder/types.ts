@@ -103,17 +103,23 @@ export const STEP_LABELS: Record<StepKey, string> = {
  * the details step for floor/elevator questions. Every flow ends with
  * the schedule step.
  */
-export function getStepSequence(type: TransportType | null): StepKey[] {
+export function getStepSequence(
+  type: TransportType | null,
+  vehicle: VehicleType | null = null,
+): StepKey[] {
   if (type === 'moving') {
     return ['type', 'moving', 'vehicle', 'route', 'schedule']
   }
   if (type === 'multiple' || type === 'single' || type === 'other') {
+    // The vehicle comes first here because bike and car orders skip the
+    // photo upload.
+    const skipPhoto = vehicle === 'bike' || vehicle === 'car'
     return [
       'type',
-      'photo',
+      'vehicle',
+      ...(skipPhoto ? [] : (['photo'] as const)),
       'dimensions',
       'details',
-      'vehicle',
       'route',
       'schedule',
     ]
