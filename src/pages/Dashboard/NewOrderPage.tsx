@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../context/useAuth'
-import { insertOrder } from '../../lib/orders'
+import { insertOrder, sendInvoiceEmail } from '../../lib/orders'
 import { ChevronLeftIcon } from './NewOrder/icons'
 import TransportTypeStep from './NewOrder/TransportTypeStep'
 import PhotoStep from './NewOrder/PhotoStep'
@@ -130,7 +130,7 @@ function NewOrderPage() {
     }
 
     setSubmitting(true)
-    const { error: insertError } = await insertOrder(user.id, {
+    const { data: created, error: insertError } = await insertOrder(user.id, {
       ...data,
       // A photo picked before switching to bike/car must not be sent.
       photo: steps.includes('photo') ? data.photo : null,
@@ -141,6 +141,14 @@ function NewOrderPage() {
       console.error('Failed to create order:', insertError.message)
       setError('Auftrag konnte nicht veröffentlicht werden. Bitte versuche es erneut.')
       return
+    }
+
+    // The Rechnung is e-mailed in the background; a failure here must not
+    // affect the order that was just placed.
+    if (created) {
+      sendInvoiceEmail(created.id).then(({ error: mailError }) => {
+        if (mailError) console.error('Invoice e-mail failed:', mailError.message)
+      })
     }
 
     setSubmitted(true)

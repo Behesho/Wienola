@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { getOrderPrice } from './pricing'
 import type { OrderFormData } from '../pages/Dashboard/NewOrder/types'
 import type { Order, OrderStatus, OrderWithCustomer, OrderWithDriver } from '../types/order'
 
@@ -47,7 +48,17 @@ function toDbRow(customerId: string, data: OrderFormData) {
     scheduled_time: data.express ? null : data.time || null,
     express: data.express,
     payer: data.payer,
-    contact_phone: data.contactPhone || null,  }
+    contact_phone: data.contactPhone || null,
+    // Zone price (bike/car only) — never entered by the customer.
+    amount: getOrderPrice({
+      vehicle: data.vehicle,
+      amount: null,
+      pickup_district: data.pickup.district || null,
+      pickup_custom_location: data.pickup.customLocation || null,
+      destination_district: data.destination.district || null,
+      destination_custom_location: data.destination.customLocation || null,
+    }),
+  }
 }
 
 export async function insertOrder(customerId: string, data: OrderFormData) {
@@ -56,6 +67,11 @@ export async function insertOrder(customerId: string, data: OrderFormData) {
     .insert(toDbRow(customerId, data))
     .select()
     .single<Order>()
+}
+
+/** Asks the send-invoice Edge Function to e-mail the customer their Rechnung. */
+export async function sendInvoiceEmail(orderId: string) {
+  return supabase.functions.invoke('send-invoice', { body: { orderId } })
 }
 
 export async function fetchMyOrders(customerId: string) {
