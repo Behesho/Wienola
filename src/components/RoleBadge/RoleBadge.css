@@ -1,0 +1,35 @@
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.role-badge__icon {
+  width: 14px;
+  height: 14px;
+  color: var(--color-brand);
+}
+
+.role-badge--driver {
+  border-color: rgba(var(--color-brand-rgb), 0.5);
+  background: rgba(var(--color-brand-rgb), 0.1);
+  color: var(--color-text);
+}
+
+.dashboard-layout__role {
+  display: flex;
+  justify-content: flex-end;
+  margin: -8px 0 12px;
+}
+
+.profile-page__role {
+  margin-top: 8px;
+}

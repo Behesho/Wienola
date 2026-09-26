@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { PersonIcon } from '../../components/icons/NavIcons'
+import RoleBadge from '../../components/RoleBadge/RoleBadge'
 import DashboardSection from '../../components/DashboardSection/DashboardSection'
 import ThemeSelector from '../../components/ThemeSelector/ThemeSelector'
 import DriverNotificationSettings from '../../components/DriverNotificationSettings/DriverNotificationSettings'
@@ -26,6 +27,7 @@ function ProfilePage() {
             {profile?.full_name || 'Nutzer_in'}
           </p>
           <p className="profile-page__email">{user?.email}</p>
+          <RoleBadge className="profile-page__role" />
         </div>
       </div>
 
