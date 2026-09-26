@@ -117,3 +117,80 @@ export function getOrderPrice(
   }
   return order.amount
 }
+
+const VIENNA_POSTCODES = Array.from(
+  { length: 23 },
+  (_, i) => `1${String(i + 1).padStart(2, '0')}0`,
+)
+
+/** Every selectable zone, for the customer price calculator and price list. */
+export const ZONE_OPTIONS: { value: Zone; label: string }[] = [
+  ...VIENNA_POSTCODES.map((plz, i) => ({
+    value: String(i + 1),
+    label: `${i + 1}. Bezirk (${plz})`,
+  })),
+  { value: 'KLN', label: 'Klosterneuburg' },
+  { value: 'SST', label: 'Seestadt Aspern' },
+]
+
+export function zoneName(zone: Zone): string {
+  return ZONE_OPTIONS.find((option) => option.value === zone)?.label ?? zone
+}
+
+export interface PriceLine {
+  label: string
+  amount: number
+}
+
+export interface Quote {
+  total: number | null
+  lines: PriceLine[]
+}
+
+/**
+ * Quote for the customer calculator.
+ *  - Zusatzstopp lies behind the delivery: same zone +6 EUR, otherwise the
+ *    leg price from the delivery zone.
+ *  - Rückweg leads from the last point back (to the pickup zone when
+ *    `returnTo` is "back", otherwise to the chosen zone) at half price.
+ */
+export function computeQuote(input: {
+  pickup: Zone
+  delivery: Zone
+  extraStop: Zone
+  returnTo: Zone | 'back'
+}): Quote {
+  const lines: PriceLine[] = []
+  if (!input.pickup || !input.delivery) return { total: null, lines }
+
+  const base = legPrice(input.pickup, input.delivery)
+  if (base === null) return { total: null, lines }
+  lines.push({
+    label: `${zoneName(input.pickup)} → ${zoneName(input.delivery)}`,
+    amount: base,
+  })
+  let total = base
+  let current = input.delivery
+
+  if (input.extraStop) {
+    const amount =
+      input.extraStop === current ? 6 : legPrice(current, input.extraStop)
+    if (amount !== null) {
+      lines.push({ label: `Zusatzstopp: ${zoneName(input.extraStop)}`, amount })
+      total += amount
+      current = input.extraStop
+    }
+  }
+
+  if (input.returnTo) {
+    const target = input.returnTo === 'back' ? input.pickup : input.returnTo
+    const full = target === current ? 6 : legPrice(current, target)
+    if (full !== null) {
+      const amount = Math.round((full / 2) * 100) / 100
+      lines.push({ label: `Rückweg: ${zoneName(target)} (½ Preis)`, amount })
+      total += amount
+    }
+  }
+
+  return { total, lines }
+}

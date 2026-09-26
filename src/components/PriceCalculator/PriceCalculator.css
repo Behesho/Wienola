@@ -1,0 +1,101 @@
+.price-calculator__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.price-calculator__result {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(var(--color-brand-rgb), 0.45);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-brand-rgb), 0.12),
+    rgba(var(--color-brand-rgb), 0.03)
+  );
+}
+
+.price-calculator__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.price-calculator__lines {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.price-calculator__lines li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.price-calculator__lines li span:last-child {
+  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.price-calculator__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid rgba(var(--color-brand-rgb), 0.3);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.price-calculator__total strong {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-brand);
+}
+
+.price-calculator__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.price-calculator__note {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+.price-calculator__reset {
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    opacity 150ms ease;
+}
+
+.price-calculator__reset:hover:not(:disabled) {
+  border-color: var(--color-brand);
+}
+
+.price-calculator__reset:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

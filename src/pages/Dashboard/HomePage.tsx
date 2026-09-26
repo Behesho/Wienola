@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import DashboardSection from '../../components/DashboardSection/DashboardSection'
+import PriceCalculator from '../../components/PriceCalculator/PriceCalculator'
+import PriceList from '../../components/PriceCalculator/PriceList'
 import { useAuth } from '../../context/useAuth'
 import { supabase } from '../../lib/supabase'
 import { fetchMyOrders } from '../../lib/orders'
@@ -14,7 +16,7 @@ import './HomePage.css'
 const RECENT_LIMIT = 5
 
 function HomePage() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const [orders, setOrders] = useState<OrderWithDriver[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -60,14 +62,16 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      <h1 className="home-page__title">Transport senden</h1>
+      <h1 className="home-page__title">
+        Hallo{profile?.full_name ? `, ${profile.full_name}` : ''}
+      </h1>
 
-      <DashboardSection title="Willkommen">
-        <p>Willkommen zurück bei Lasten-Wien.</p>
+      <DashboardSection title="Preisrechner">
+        <PriceCalculator />
       </DashboardSection>
 
-      <DashboardSection title="Schnellauftrag">
-        <p>Erstellen Sie in wenigen Schritten einen neuen Transportauftrag.</p>
+      <DashboardSection title="Preisliste">
+        <PriceList />
       </DashboardSection>
 
       <DashboardSection title="Letzte Aufträge">
@@ -101,14 +105,6 @@ function HomePage() {
             ))}
           </ul>
         )}
-      </DashboardSection>
-
-      <DashboardSection title="Angebote">
-        <p>Aktuell liegen keine Angebote vor.</p>
-      </DashboardSection>
-
-      <DashboardSection title="Aktuelle Transporte">
-        <p>Keine aktiven Transporte.</p>
       </DashboardSection>
     </div>
   )
