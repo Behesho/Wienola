@@ -3,14 +3,18 @@
 //
 // Called from the app with the customer's own session (JWT verification is
 // on), so the order is read with the customer's permissions — no service
-// role key involved. The e-mail is sent through Resend.
+// role key involved. The e-mail is sent from the company's own mailbox over
+// SMTP (no third-party mail service).
 //
 // Required secrets (Supabase → Edge Functions → Secrets):
-//   RESEND_API_KEY   API key from resend.com
-//   INVOICE_FROM     e.g. "Abholance Wien <info@abholance-wien.at>" (domain must be verified in Resend)
+//   SMTP_HOST   e.g. smtp.hostinger.com
+//   SMTP_PORT   465
+//   SMTP_USER   info@abholance-wien.at
+//   SMTP_PASS   password of that mailbox
 // Optional:
-//   SITE_URL         public URL of the app (the logo image is loaded from there)
+//   SITE_URL    public URL of the app (the logo image is loaded from there)
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { SMTPClient } from 'https://deno.land/x/denomailer@1.6.0/mod.ts'
 
 const COMPANY = {
   name: 'Abholance Wien',
@@ -353,25 +357,29 @@ Deno.serve(async (request) => {
       logoUrl: `${siteUrl}/logo-email.png`,
     })
 
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${Deno.env.get('RESEND_API_KEY')}`,
-        'Content-Type': 'application/json',
+    const client = new SMTPClient({
+      connection: {
+        hostname: Deno.env.get('SMTP_HOST') ?? 'smtp.hostinger.com',
+        port: Number(Deno.env.get('SMTP_PORT') ?? '465'),
+        tls: true,
+        auth: {
+          username: Deno.env.get('SMTP_USER') ?? COMPANY.email,
+          password: Deno.env.get('SMTP_PASS') ?? '',
+        },
       },
-      body: JSON.stringify({
-        from: Deno.env.get('INVOICE_FROM') ?? `${COMPANY.name} <${COMPANY.email}>`,
-        to: [user.email],
-        reply_to: COMPANY.email,
-        subject: `Deine Rechnung – ${COMPANY.name}`,
-        html,
-      }),
     })
 
-    if (!response.ok) {
-      const detail = await response.text()
-      console.error('Resend error:', detail)
-      return json({ error: 'email failed', detail }, 502)
+    try {
+      await client.send({
+        from: `${COMPANY.name} <${Deno.env.get('SMTP_USER') ?? COMPANY.email}>`,
+        to: user.email,
+        replyTo: COMPANY.email,
+        subject: `Deine Rechnung – ${COMPANY.name}`,
+        content: 'Bitte öffne diese E-Mail in einem HTML-fähigen Programm.',
+        html,
+      })
+    } finally {
+      await client.close()
     }
 
     return json({ ok: true })
