@@ -41,6 +41,7 @@ const TRANSPORT_TYPE: Record<string, string> = {
   courier: 'Kurier',
   valuable: 'Werttransport',
   other: 'Sonstiges',
+  willhaben: 'Willhaben-Abholung',
 }
 
 const VEHICLE: Record<string, string> = {

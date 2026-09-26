@@ -41,6 +41,24 @@ function PackageIcon() {
   )
 }
 
+function BagIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="home-page__tile-icon"
+    >
+      <path d="M5 8h14l-1 12H6L5 8Z" />
+      <path d="M9 8V6.5a3 3 0 0 1 6 0V8" />
+    </svg>
+  )
+}
+
 function HomePage() {
   const { profile } = useAuth()
 
@@ -71,6 +89,19 @@ function HomePage() {
           <span className="home-page__tile-title">Post Abholung</span>
           <span className="home-page__tile-subtitle">
             Neuen Transportauftrag erstellen
+          </span>
+        </span>
+        <span className="home-page__tile-arrow" aria-hidden="true">
+          ›
+        </span>
+      </Link>
+
+      <Link to="/dashboard/new-order?type=willhaben" className="home-page__tile">
+        <BagIcon />
+        <span className="home-page__tile-text">
+          <span className="home-page__tile-title">Willhaben</span>
+          <span className="home-page__tile-subtitle">
+            Willhaben-Kauf abholen und liefern lassen
           </span>
         </span>
         <span className="home-page__tile-arrow" aria-hidden="true">

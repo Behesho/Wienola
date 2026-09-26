@@ -59,6 +59,7 @@ export interface OrderWithCustomer extends Order {
   customer: {
     full_name: string | null
     phone: string | null
+    email: string | null
   } | null
 }
 
@@ -109,6 +110,7 @@ export const TRANSPORT_TYPE_LABELS: Record<TransportType, string> = {
   courier: 'Kurier',
   valuable: 'Werttransport',
   other: 'Sonstiges',
+  willhaben: 'Willhaben-Abholung',
 }
 
 export const VEHICLE_LABELS: Record<VehicleType, string> = {

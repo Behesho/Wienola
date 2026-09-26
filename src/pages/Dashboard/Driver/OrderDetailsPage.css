@@ -231,3 +231,44 @@
   font-weight: 700;
   color: var(--color-text-secondary);
 }
+
+.order-details-page__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.order-details-page__header .order-details-page__title {
+  margin: 0;
+}
+
+.order-details-page__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 150ms ease;
+}
+
+.order-details-page__header .order-details-page__back {
+  margin-bottom: 0;
+}
+
+.order-details-page__back svg {
+  width: 18px;
+  height: 18px;
+}
+
+.order-details-page__back:hover {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+}

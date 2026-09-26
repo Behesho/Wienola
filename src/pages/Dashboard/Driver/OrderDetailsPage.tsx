@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../../../context/useAuth'
 import { acceptOrder, advanceOrderStatus, cancelOrder, fetchOrderById } from '../../../lib/orders'
 import { acknowledgeNewOrders } from '../../../lib/orderNotifications'
@@ -12,6 +12,7 @@ import {
   VanIcon,
 } from '../NewOrder/icons'
 import { PhoneIcon } from '../../../components/icons/NavIcons'
+import { ChevronLeftIcon } from '../NewOrder/icons'
 import {
   formatAmount,
   formatStockUnit,
@@ -46,6 +47,7 @@ function OrderDetailsPage() {
   const { orderId } = useParams<{ orderId: string }>()
   const { user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [order, setOrder] = useState<OrderWithCustomer | null>(null)
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
@@ -135,12 +137,39 @@ function OrderDetailsPage() {
     setOrder({ ...order, ...data })
   }
 
+  // Back to the previous page; if the page was opened directly, go home.
+  function goBack() {
+    if (location.key === 'default') navigate('/dashboard')
+    else navigate(-1)
+  }
+
+  const backButton = (
+    <button
+      type="button"
+      className="order-details-page__back"
+      onClick={goBack}
+      aria-label="Zurück"
+    >
+      <ChevronLeftIcon />
+    </button>
+  )
+
   if (loading) {
-    return <p className="order-details-page__empty">Lädt…</p>
+    return (
+      <>
+        {backButton}
+        <p className="order-details-page__empty">Lädt…</p>
+      </>
+    )
   }
 
   if (!order) {
-    return <p className="order-details-page__empty">Auftrag nicht gefunden.</p>
+    return (
+      <>
+        {backButton}
+        <p className="order-details-page__empty">Auftrag nicht gefunden.</p>
+      </>
+    )
   }
 
   const VehicleIcon = order.vehicle ? VEHICLE_ICONS[order.vehicle] : null
@@ -157,7 +186,10 @@ function OrderDetailsPage() {
 
   return (
     <div className="order-details-page">
-      <h1 className="order-details-page__title">Auftragsdetails</h1>
+      <div className="order-details-page__header">
+        {backButton}
+        <h1 className="order-details-page__title">Auftragsdetails</h1>
+      </div>
 
       {order.status === 'cancelled' && (
         <p className="order-details-page__cancelled" role="status">
@@ -178,6 +210,17 @@ function OrderDetailsPage() {
             >
               <PhoneIcon />
               Anrufen
+            </a>
+          </div>
+        )}
+        {order.customer?.email && (
+          <div className="order-details-page__phone-row">
+            <span>{order.customer.email}</span>
+            <a
+              href={`mailto:${order.customer.email}`}
+              className="order-details-page__call"
+            >
+              E-Mail
             </a>
           </div>
         )}
@@ -308,8 +351,11 @@ function OrderDetailsPage() {
             )}
           </dl>
 
-          {order.photo_url && order.transport_type === 'letter' && (
-            <p className="order-details-page__photo-label">Abholschein</p>
+          {order.photo_url &&
+            (order.transport_type === 'letter' || order.transport_type === 'willhaben') && (
+            <p className="order-details-page__photo-label">
+              {order.transport_type === 'willhaben' ? 'Willhaben-Beleg' : 'Abholschein'}
+            </p>
           )}
           {order.photo_url && (
             <img

@@ -8,6 +8,7 @@ interface RouteStepProps {
   destination: AddressValue
   /** Set for Brief/Post orders: shows the Abholschein upload. */
   showSlip?: boolean
+  slipVariant?: 'post' | 'willhaben'
   slip?: string | null
   onChange: (patch: {
     pickup?: AddressValue
@@ -20,6 +21,7 @@ function RouteStep({
   pickup,
   destination,
   showSlip = false,
+  slipVariant = 'post',
   slip = null,
   onChange,
 }: RouteStepProps) {
@@ -40,7 +42,10 @@ function RouteStep({
       />
 
       {showSlip && (
-        <SlipUpload slip={slip} onChange={(value) => onChange({ slip: value })} />
+        <SlipUpload
+          slip={slip}
+          variant={slipVariant}
+          onChange={(value) => onChange({ slip: value })} />
       )}
     </div>
   )

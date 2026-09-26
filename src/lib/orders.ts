@@ -10,7 +10,7 @@ const ACTIVE_STATUSES: OrderStatus[] = [
   'delivered',
 ]
 
-const CUSTOMER_SELECT = '*, customer:profiles!customer_id(full_name, phone)'
+const CUSTOMER_SELECT = '*, customer:profiles!customer_id(full_name, phone, email)'
 const DRIVER_SELECT = '*, driver:profiles!driver_id(full_name, phone)'
 
 function toDbRow(customerId: string, data: OrderFormData) {

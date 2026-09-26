@@ -5,11 +5,28 @@ import './SlipUpload.css'
 
 interface SlipUploadProps {
   slip: string | null
+  variant?: 'post' | 'willhaben'
   onChange: (slip: string | null) => void
 }
 
+const TEXTS = {
+  post: {
+    heading: 'Abholschein der Post',
+    cta: '+ Abholschein hochladen',
+    hint: 'Foto vom Zettel, den der Dienstleister zum Abholen braucht',
+    alt: 'Abholschein',
+  },
+  willhaben: {
+    heading: 'Willhaben-Beleg',
+    cta: '+ Beleg hochladen',
+    hint: 'Screenshot der Anzeige oder der Nachricht des Verkäufers',
+    alt: 'Willhaben-Beleg',
+  },
+}
+
 /** Optional upload of the Post slip (Abholschein) needed to collect mail. */
-function SlipUpload({ slip, onChange }: SlipUploadProps) {
+function SlipUpload({ slip, variant = 'post', onChange }: SlipUploadProps) {
+  const texts = TEXTS[variant]
   const inputRef = useRef<HTMLInputElement>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -31,7 +48,7 @@ function SlipUpload({ slip, onChange }: SlipUploadProps) {
 
   return (
     <div className="slip-upload">
-      <h3 className="slip-upload__heading">Abholschein der Post</h3>
+      <h3 className="slip-upload__heading">{texts.heading}</h3>
 
       <label className="slip-upload__dropzone">
         <input
@@ -41,13 +58,13 @@ function SlipUpload({ slip, onChange }: SlipUploadProps) {
           onChange={handleFileChange}
         />
         {slip ? (
-          <img src={slip} alt="Abholschein" className="slip-upload__preview" />
+          <img src={slip} alt={texts.alt} className="slip-upload__preview" />
         ) : (
           <span className="slip-upload__placeholder">
             <CameraIcon className="slip-upload__icon" />
-            <span className="slip-upload__cta">+ Abholschein hochladen</span>
+            <span className="slip-upload__cta">{texts.cta}</span>
             <span className="slip-upload__hint">
-              Foto vom Zettel, den der Dienstleister zum Abholen braucht
+              {texts.hint}
             </span>
           </span>
         )}

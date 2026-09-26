@@ -57,11 +57,15 @@ function validateStep(stepKey: StepKey, data: OrderFormData): string | null {
 function NewOrderPage() {
   const navigate = useNavigate()
   const { user, profile } = useAuth()
-  // "Post Abholung" on the home page opens the form with Brief preselected,
+  // "Post Abholung" / "Willhaben" on the home page open the form with the type preselected,
   // skipping the "Was möchtest du versenden?" step.
   const [searchParams] = useSearchParams()
   const presetType: TransportType | null =
-    searchParams.get('type') === 'letter' ? 'letter' : null
+    searchParams.get('type') === 'letter'
+      ? 'letter'
+      : searchParams.get('type') === 'willhaben'
+        ? 'willhaben'
+        : null
   const [stepIndex, setStepIndex] = useState(presetType ? 1 : 0)
   // No contact step: the driver reaches the customer through the phone number
   // given at registration, stored on the order as contact_phone.
@@ -208,7 +212,10 @@ function NewOrderPage() {
           <RouteStep
             pickup={data.pickup}
             destination={data.destination}
-            showSlip={data.transportType === 'letter'}
+            showSlip={
+              data.transportType === 'letter' || data.transportType === 'willhaben'
+            }
+            slipVariant={data.transportType === 'willhaben' ? 'willhaben' : 'post'}
             slip={data.slip}
             onChange={update}
           />

@@ -9,6 +9,7 @@ export type TransportType =
   | 'courier'
   | 'valuable'
   | 'other'
+  | 'willhaben'
 
 export type ElevatorAnswer = 'yes' | 'no' | null
 

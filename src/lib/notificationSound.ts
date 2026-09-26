@@ -70,3 +70,39 @@ export function stopRepeating() {
     repeatTimer = null
   }
 }
+
+/**
+ * Browsers keep audio muted until the user has interacted with the page, so a
+ * chime triggered by a realtime event would stay silent. This makes the very
+ * first tap/click/key press wake the audio context up.
+ */
+export function unlockAudio() {
+  const ctx = getContext()
+  if (!ctx) return
+  try {
+    if (ctx.state === 'suspended') void ctx.resume()
+    // A one-sample silent buffer fully unlocks playback on iOS Safari.
+    const source = ctx.createBufferSource()
+    source.buffer = ctx.createBuffer(1, 1, 22050)
+    source.connect(ctx.destination)
+    source.start(0)
+  } catch {
+    // Nothing to do — audio just stays locked until the next interaction.
+  }
+}
+
+/** Unlocks audio on the first user interaction; returns a cleanup function. */
+export function installAudioUnlock(): () => void {
+  const events = ['pointerdown', 'touchend', 'click', 'keydown'] as const
+  function handler() {
+    unlockAudio()
+    remove()
+  }
+  function remove() {
+    events.forEach((name) => window.removeEventListener(name, handler))
+  }
+  events.forEach((name) => window.addEventListener(name, handler, { passive: true }))
+  // Also try right away: works when the page was already interacted with.
+  unlockAudio()
+  return remove
+}

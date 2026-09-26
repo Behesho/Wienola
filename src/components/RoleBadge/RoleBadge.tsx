@@ -5,7 +5,7 @@ import './RoleBadge.css'
 
 /** Shows which kind of account is signed in: Kunde_in or Dienstleister. */
 function RoleBadge({ className = '' }: { className?: string }) {
-  const { role } = useAuth()
+  const { role, user } = useAuth()
   if (!role) return null
 
   const isDriver = role === 'dienstleister'
@@ -16,7 +16,7 @@ function RoleBadge({ className = '' }: { className?: string }) {
       className={`role-badge${isDriver ? ' role-badge--driver' : ''} ${className}`.trim()}
     >
       <Icon className="role-badge__icon" />
-      {isDriver ? 'Dienstleister' : 'Kunde_in'}
+      {isDriver ? 'Dienstleister' : user?.is_anonymous ? 'Kunde_in · Gast' : 'Kunde_in'}
     </span>
   )
 }

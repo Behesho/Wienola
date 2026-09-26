@@ -26,13 +26,19 @@ function ProfilePage() {
           <p className="profile-page__name">
             {profile?.full_name || 'Nutzer_in'}
           </p>
-          <p className="profile-page__email">{user?.email}</p>
+          <p className="profile-page__email">{user?.email || profile?.email}</p>
           <RoleBadge className="profile-page__role" />
         </div>
       </div>
 
       <DashboardSection title="Konto">
         <p>Persönliche Daten, Zahlungsmethoden und Einstellungen folgen in Kürze.</p>
+        {user?.is_anonymous && (
+          <p className="profile-page__guest-note">
+            Du bist als Gast angemeldet. Nach dem Abmelden sind deine Aufträge
+            nicht mehr einsehbar.
+          </p>
+        )}
         <button
           type="button"
           className="profile-page__logout"

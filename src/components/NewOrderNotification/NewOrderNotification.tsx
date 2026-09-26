@@ -4,6 +4,7 @@ import { useAuth } from '../../context/useAuth'
 import { supabase } from '../../lib/supabase'
 import { getNotificationsEnabled } from '../../lib/driverPreferences'
 import { acknowledgeNewOrders, notifyNewOrder, onOrdersAcknowledged } from '../../lib/orderNotifications'
+import { installAudioUnlock } from '../../lib/notificationSound'
 import { BellIcon } from '../icons/NavIcons'
 import './NewOrderNotification.css'
 
@@ -15,6 +16,8 @@ function NewOrderNotification() {
   useEffect(() => {
     if (role !== 'dienstleister') return
     if (!getNotificationsEnabled()) return
+
+    const removeAudioUnlock = installAudioUnlock()
 
     const channel = supabase
       .channel('new-open-orders')
@@ -33,6 +36,7 @@ function NewOrderNotification() {
     return () => {
       supabase.removeChannel(channel)
       unsubscribeAck()
+      removeAudioUnlock()
     }
   }, [role])
 

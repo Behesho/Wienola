@@ -79,6 +79,14 @@ function LoginPage() {
           </button>
         </form>
 
+        <div className="auth__divider">
+          <span>oder</span>
+        </div>
+
+        <Link to="/guest" className="auth__guest">
+          Als Gast fortfahren
+        </Link>
+
         <p className="auth__switch">
           Noch kein Konto? <Link to="/register">Jetzt registrieren</Link>
         </p>

@@ -52,3 +52,10 @@
 .profile-page__logout:hover {
   color: var(--color-danger);
 }
+
+.dashboard-section__body .profile-page__guest-note {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-brand);
+}
