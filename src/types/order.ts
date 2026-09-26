@@ -7,6 +7,7 @@ export type OrderStatus =
   | 'in_transit'
   | 'delivered'
   | 'completed'
+  | 'cancelled'
 
 export type PaymentStatus = 'paid' | 'unpaid'
 export type Payer = 'pickup' | 'destination'
@@ -50,6 +51,7 @@ export interface Order {
   created_at: string
   accepted_at: string | null
   completed_at: string | null
+  cancelled_at: string | null
   updated_at: string
 }
 
@@ -76,6 +78,7 @@ export const STATUS_LABELS: Record<OrderStatus, string> = {
   in_transit: 'Unterwegs',
   delivered: 'Zugestellt',
   completed: 'Erledigt',
+  cancelled: 'Storniert',
 }
 
 /** Button label to advance OUT of this status, and the status it leads to. */

@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../../../context/useAuth'
-import { acceptOrder, advanceOrderStatus, fetchOrderById } from '../../../lib/orders'
+import { acceptOrder, advanceOrderStatus, cancelOrder, fetchOrderById } from '../../../lib/orders'
 import { acknowledgeNewOrders } from '../../../lib/orderNotifications'
 import { formatDateTime } from '../../../lib/formatDate'
 import { getOrderPrice } from '../../../lib/pricing'
@@ -19,6 +19,7 @@ import {
   PAYER_LABELS,
   PAYMENT_STATUS_LABELS,
   STATUS_ADVANCE,
+  STATUS_LABELS,
   TRANSPORT_TYPE_LABELS,
   VEHICLE_LABELS,
   type OrderWithCustomer,
@@ -118,6 +119,22 @@ function OrderDetailsPage() {
     setOrder({ ...order, ...data })
   }
 
+  async function handleCancel() {
+    if (!order) return
+    if (!window.confirm('Möchtest du diesen Auftrag wirklich stornieren?')) return
+
+    setBusy(true)
+    setError(null)
+    const { data, error: cancelError } = await cancelOrder(order.id)
+    setBusy(false)
+
+    if (cancelError || !data) {
+      setError('Auftrag konnte nicht storniert werden. Bitte versuche es erneut.')
+      return
+    }
+    setOrder({ ...order, ...data })
+  }
+
   if (loading) {
     return <p className="order-details-page__empty">Lädt…</p>
   }
@@ -141,6 +158,12 @@ function OrderDetailsPage() {
   return (
     <div className="order-details-page">
       <h1 className="order-details-page__title">Auftragsdetails</h1>
+
+      {order.status === 'cancelled' && (
+        <p className="order-details-page__cancelled" role="status">
+          {STATUS_LABELS.cancelled}
+        </p>
+      )}
 
       <Section title="Kunde">
         <p className="order-details-page__customer-name">
@@ -316,6 +339,17 @@ function OrderDetailsPage() {
           disabled={busy}
         >
           {busy ? 'Wird aktualisiert…' : advance.label}
+        </button>
+      )}
+
+      {order.status === 'accepted' && order.driver_id === user?.id && (
+        <button
+          type="button"
+          className="order-details-page__cancel"
+          onClick={handleCancel}
+          disabled={busy}
+        >
+          Auftrag stornieren
         </button>
       )}
     </div>

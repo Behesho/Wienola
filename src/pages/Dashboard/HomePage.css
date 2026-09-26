@@ -49,3 +49,7 @@
   font-size: 0.8rem;
   color: var(--color-text-secondary);
 }
+
+.home-page__history-status--cancelled {
+  color: var(--color-danger);
+}

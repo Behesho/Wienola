@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/useAuth'
 import { supabase } from '../../lib/supabase'
-import { fetchMyOrders } from '../../lib/orders'
+import { cancelOrder, fetchMyOrders } from '../../lib/orders'
 import { formatDateTime } from '../../lib/formatDate'
 import {
   formatAmount,
@@ -16,6 +16,7 @@ function OrdersPage() {
   const { user } = useAuth()
   const [orders, setOrders] = useState<OrderWithDriver[]>([])
   const [loading, setLoading] = useState(true)
+  const [cancellingId, setCancellingId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!user) return
@@ -55,6 +56,17 @@ function OrdersPage() {
     }
   }, [user])
 
+  async function handleCancel(orderId: string) {
+    if (!window.confirm('Möchtest du diesen Auftrag wirklich stornieren?')) return
+    setCancellingId(orderId)
+    const { error } = await cancelOrder(orderId)
+    setCancellingId(null)
+    if (error) {
+      console.error('Failed to cancel order:', error.message)
+    }
+    // The realtime subscription reloads the list once the row changes.
+  }
+
   return (
     <div className="orders-page">
       <h1 className="orders-page__title">Aufträge</h1>
@@ -67,12 +79,17 @@ function OrdersPage() {
         </div>
       ) : (
         orders.map((order) => (
-          <div key={order.id} className="order-summary-card">
+          <div
+            key={order.id}
+            className={`order-summary-card${order.status === 'cancelled' ? ' order-summary-card--cancelled' : ''}`}
+          >
             <div className="order-summary-card__top">
               <span className="order-summary-card__type">
                 {TRANSPORT_TYPE_LABELS[order.transport_type]}
               </span>
-              <span className="order-summary-card__status">
+              <span
+                className={`order-summary-card__status${order.status === 'cancelled' ? ' order-summary-card__status--cancelled' : ''}`}
+              >
                 {STATUS_LABELS[order.status]}
               </span>
             </div>
@@ -108,6 +125,17 @@ function OrdersPage() {
                 ? `Dienstleister: ${order.driver.full_name}`
                 : 'Noch kein Dienstleister zugewiesen.'}
             </p>
+
+            {(order.status === 'open' || order.status === 'accepted') && (
+              <button
+                type="button"
+                className="order-summary-card__cancel"
+                onClick={() => handleCancel(order.id)}
+                disabled={cancellingId === order.id}
+              >
+                {cancellingId === order.id ? 'Wird storniert…' : 'Stornieren'}
+              </button>
+            )}
           </div>
         ))
       )}

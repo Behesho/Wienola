@@ -36,7 +36,7 @@ function EarningsSummary({ driverId }: EarningsSummaryProps) {
         setTotal(null)
       } else {
         const sum = (data ?? [])
-          .filter((order) => order.payment_status === 'paid')
+          .filter((order) => order.status === 'completed')
           .reduce((acc, order) => acc + (getOrderPrice(order) ?? 0), 0)
         setTotal(sum)
       }

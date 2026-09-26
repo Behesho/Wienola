@@ -83,7 +83,9 @@ function HomePage() {
                   <span className="home-page__history-type">
                     {TRANSPORT_TYPE_LABELS[order.transport_type]}
                   </span>
-                  <span className="home-page__history-status">
+                  <span
+                    className={`home-page__history-status${order.status === 'cancelled' ? ' home-page__history-status--cancelled' : ''}`}
+                  >
                     {STATUS_LABELS[order.status]}
                   </span>
                 </div>

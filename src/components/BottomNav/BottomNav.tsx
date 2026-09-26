@@ -2,15 +2,16 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { NavLink, useLocation } from 'react-router-dom'
 import type { ComponentType, SVGProps } from 'react'
 import {
+  BellIcon,
   BriefcaseIcon,
   CheckCircleIcon,
   ClipboardIcon,
   HomeIcon,
   PersonIcon,
   PlusIcon,
-  SearchIcon,
 } from '../icons/NavIcons'
 import { useAuth } from '../../context/useAuth'
+import { useNotifications } from '../../context/useNotifications'
 import './BottomNav.css'
 
 interface NavItemConfig {
@@ -22,7 +23,7 @@ interface NavItemConfig {
 
 const CUSTOMER_ITEMS: NavItemConfig[] = [
   { path: '/dashboard', end: true, label: 'Home', icon: HomeIcon },
-  { path: '/dashboard/search', label: 'Suchen', icon: SearchIcon },
+  { path: '/dashboard/notifications', label: 'Mitteilungen', icon: BellIcon },
   { path: '/dashboard/orders', label: 'Auftrag', icon: ClipboardIcon },
   { path: '/dashboard/profile', label: 'Profil', icon: PersonIcon },
 ]
@@ -47,8 +48,29 @@ function isPathActive(item: NavItemConfig, pathname: string) {
     : pathname === item.path || pathname.startsWith(`${item.path}/`)
 }
 
+function NavIcon({
+  item,
+  unreadCount,
+}: {
+  item: NavItemConfig
+  unreadCount: number
+}) {
+  const showBadge = item.path === '/dashboard/notifications' && unreadCount > 0
+  return (
+    <span className="bottom-nav__icon-wrap">
+      <item.icon className="bottom-nav__icon" />
+      {showBadge && (
+        <span className="bottom-nav__badge" aria-label={`${unreadCount} ungelesen`}>
+          {unreadCount > 9 ? '9+' : unreadCount}
+        </span>
+      )}
+    </span>
+  )
+}
+
 function BottomNav() {
   const { role } = useAuth()
+  const { unreadCount } = useNotifications()
   const location = useLocation()
   const barRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<(HTMLAnchorElement | null)[]>([])
@@ -122,7 +144,7 @@ function BottomNav() {
               `bottom-nav__item${isActive ? ' bottom-nav__item--active' : ''}`
             }
           >
-            <item.icon className="bottom-nav__icon" />
+            <NavIcon item={item} unreadCount={unreadCount} />
             <span className="bottom-nav__label">{item.label}</span>
           </NavLink>
         ))}
@@ -148,7 +170,7 @@ function BottomNav() {
                 `bottom-nav__item${isActive ? ' bottom-nav__item--active' : ''}`
               }
             >
-              <item.icon className="bottom-nav__icon" />
+              <NavIcon item={item} unreadCount={unreadCount} />
               <span className="bottom-nav__label">{item.label}</span>
             </NavLink>
           ))}

@@ -92,21 +92,35 @@ export interface DateRange {
   to: string // ISO date, inclusive
 }
 
+/** The driver's finished jobs: completed ones plus cancelled ones. */
 export async function fetchCompletedJobs(driverId: string, range?: DateRange) {
   let query = supabase
     .from('orders')
     .select(CUSTOMER_SELECT)
     .eq('driver_id', driverId)
-    .eq('status', 'completed')
-    .order('completed_at', { ascending: false })
+    .in('status', ['completed', 'cancelled'])
+    .order('updated_at', { ascending: false })
 
   if (range) {
-    query = query
-      .gte('completed_at', `${range.from}T00:00:00`)
-      .lte('completed_at', `${range.to}T23:59:59`)
+    const from = `${range.from}T00:00:00`
+    const to = `${range.to}T23:59:59`
+    query = query.or(
+      `and(status.eq.completed,completed_at.gte.${from},completed_at.lte.${to}),` +
+        `and(status.eq.cancelled,cancelled_at.gte.${from},cancelled_at.lte.${to})`,
+    )
   }
 
   return query.returns<OrderWithCustomer[]>()
+}
+
+/** Cancels an order (customer: open/accepted; driver: their own job). */
+export async function cancelOrder(orderId: string) {
+  return supabase
+    .from('orders')
+    .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
+    .eq('id', orderId)
+    .select()
+    .maybeSingle<Order>()
 }
 
 export async function fetchOrderById(orderId: string) {

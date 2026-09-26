@@ -103,3 +103,13 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.job-card--cancelled {
+  border-color: rgba(226, 55, 63, 0.55);
+  background: rgba(226, 55, 63, 0.06);
+}
+
+.job-card__status--cancelled {
+  background: rgba(226, 55, 63, 0.14);
+  color: var(--color-danger);
+}

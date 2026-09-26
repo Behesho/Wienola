@@ -190,3 +190,37 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.order-details-page__cancelled {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(226, 55, 63, 0.55);
+  background: rgba(226, 55, 63, 0.1);
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.order-details-page__cancel {
+  width: 100%;
+  height: 46px;
+  margin-top: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(226, 55, 63, 0.55);
+  background: none;
+  color: var(--color-danger);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.order-details-page__cancel:hover:not(:disabled) {
+  background: rgba(226, 55, 63, 0.1);
+}
+
+.order-details-page__cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
