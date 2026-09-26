@@ -1,0 +1,40 @@
+.contact-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.contact-buttons__button {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 6px;
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.contact-buttons__button:hover {
+  border-color: var(--color-brand);
+}
+
+.contact-buttons__button:active {
+  transform: scale(0.97);
+}
+
+.contact-buttons__icon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-brand);
+}

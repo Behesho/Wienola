@@ -17,12 +17,20 @@ import './BottomNav.css'
 interface NavItemConfig {
   path: string
   end?: boolean
+  /** Sub-pages that keep this item highlighted. */
+  alsoActive?: string[]
   label: string
   icon: ComponentType<SVGProps<SVGSVGElement>>
 }
 
 const CUSTOMER_ITEMS: NavItemConfig[] = [
-  { path: '/dashboard', end: true, label: 'Home', icon: HomeIcon },
+  {
+    path: '/dashboard',
+    end: true,
+    alsoActive: ['/dashboard/prices'],
+    label: 'Home',
+    icon: HomeIcon,
+  },
   { path: '/dashboard/notifications', label: 'Mitteilungen', icon: BellIcon },
   { path: '/dashboard/orders', label: 'Auftrag', icon: ClipboardIcon },
   { path: '/dashboard/profile', label: 'Profil', icon: PersonIcon },
@@ -43,6 +51,7 @@ interface BubbleRect {
 }
 
 function isPathActive(item: NavItemConfig, pathname: string) {
+  if (item.alsoActive?.includes(pathname)) return true
   return item.end
     ? pathname === item.path
     : pathname === item.path || pathname.startsWith(`${item.path}/`)
@@ -140,8 +149,8 @@ function BottomNav() {
             to={item.path}
             end={item.end}
             ref={itemRefCallbacks[index]}
-            className={({ isActive }) =>
-              `bottom-nav__item${isActive ? ' bottom-nav__item--active' : ''}`
+            className={() =>
+              `bottom-nav__item${isPathActive(item, location.pathname) ? ' bottom-nav__item--active' : ''}`
             }
           >
             <NavIcon item={item} unreadCount={unreadCount} />
@@ -166,8 +175,8 @@ function BottomNav() {
               to={item.path}
               end={item.end}
               ref={itemRefCallbacks[index + 2]}
-              className={({ isActive }) =>
-                `bottom-nav__item${isActive ? ' bottom-nav__item--active' : ''}`
+              className={() =>
+                `bottom-nav__item${isPathActive(item, location.pathname) ? ' bottom-nav__item--active' : ''}`
               }
             >
               <NavIcon item={item} unreadCount={unreadCount} />

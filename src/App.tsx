@@ -6,6 +6,7 @@ import ForgotPasswordPage from './pages/Auth/ForgotPasswordPage'
 import ResetPasswordPage from './pages/Auth/ResetPasswordPage'
 import DashboardLayout from './layouts/DashboardLayout'
 import HomePage from './pages/Dashboard/HomePage'
+import PricesPage from './pages/Dashboard/PricesPage'
 import NotificationsPage from './pages/Dashboard/NotificationsPage'
 import NewOrderPage from './pages/Dashboard/NewOrderPage'
 import OrdersPage from './pages/Dashboard/OrdersPage'
@@ -51,6 +52,7 @@ function App() {
           ) : (
             <>
               <Route index element={<HomePage />} />
+              <Route path="prices" element={<PricesPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
               <Route path="new-order" element={<NewOrderPage />} />
               <Route path="orders" element={<OrdersPage />} />
