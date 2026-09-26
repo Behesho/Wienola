@@ -22,6 +22,25 @@ function CalculatorIcon() {
   )
 }
 
+function PackageIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="home-page__tile-icon"
+    >
+      <path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" />
+      <path d="m4 7 8 4 8-4" />
+      <path d="M12 11v10" />
+    </svg>
+  )
+}
+
 function HomePage() {
   const { profile } = useAuth()
 
@@ -45,6 +64,19 @@ function HomePage() {
       </Link>
 
       <ContactButtons />
+
+      <Link to="/dashboard/new-order" className="home-page__tile">
+        <PackageIcon />
+        <span className="home-page__tile-text">
+          <span className="home-page__tile-title">Post Abholung</span>
+          <span className="home-page__tile-subtitle">
+            Neuen Transportauftrag erstellen
+          </span>
+        </span>
+        <span className="home-page__tile-arrow" aria-hidden="true">
+          ›
+        </span>
+      </Link>
     </div>
   )
 }
