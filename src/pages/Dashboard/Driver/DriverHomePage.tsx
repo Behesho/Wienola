@@ -5,6 +5,7 @@ import { acceptOrder, fetchOpenOrders } from '../../../lib/orders'
 import { acknowledgeNewOrders } from '../../../lib/orderNotifications'
 import AvailableOrderCard from '../../../components/AvailableOrderCard/AvailableOrderCard'
 import EarningsSummary from '../../../components/EarningsSummary/EarningsSummary'
+import TodayBilanz from '../../../components/BilanzCard/TodayBilanz'
 import type { Order } from '../../../types/order'
 import './DriverHomePage.css'
 
@@ -73,6 +74,8 @@ function DriverHomePage() {
           <AvailableOrderCard key={order.id} order={order} onAccept={handleAccept} />
         ))
       )}
+
+      <TodayBilanz />
     </div>
   )
 }

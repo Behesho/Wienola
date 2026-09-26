@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useAuth } from '../../../context/useAuth'
 import { advanceOrderStatus, fetchMyJobs } from '../../../lib/orders'
+import TodayBilanz from '../../../components/BilanzCard/TodayBilanz'
 import JobCard from '../../../components/JobCard/JobCard'
 import { STATUS_ADVANCE, type OrderWithCustomer } from '../../../types/order'
 import './MyJobsPage.css'
@@ -69,6 +70,8 @@ function MyJobsPage() {
           )
         })
       )}
+
+      <TodayBilanz />
     </div>
   )
 }

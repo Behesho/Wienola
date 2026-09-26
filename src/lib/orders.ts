@@ -106,7 +106,7 @@ export async function fetchCompletedJobs(driverId: string, range?: DateRange) {
     const to = `${range.to}T23:59:59`
     query = query.or(
       `and(status.eq.completed,completed_at.gte.${from},completed_at.lte.${to}),` +
-        `and(status.eq.cancelled,cancelled_at.gte.${from},cancelled_at.lte.${to})`,
+        `and(status.eq.cancelled,updated_at.gte.${from},updated_at.lte.${to})`,
     )
   }
 
@@ -117,7 +117,7 @@ export async function fetchCompletedJobs(driverId: string, range?: DateRange) {
 export async function cancelOrder(orderId: string) {
   return supabase
     .from('orders')
-    .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
+    .update({ status: 'cancelled' })
     .eq('id', orderId)
     .select()
     .maybeSingle<Order>()

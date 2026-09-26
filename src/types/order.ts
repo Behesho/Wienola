@@ -51,7 +51,6 @@ export interface Order {
   created_at: string
   accepted_at: string | null
   completed_at: string | null
-  cancelled_at: string | null
   updated_at: string
 }
 

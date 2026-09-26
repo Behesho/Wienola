@@ -7,13 +7,13 @@ import {
   type DatePreset,
 } from '../../../lib/dateRangePresets'
 import JobCard from '../../../components/JobCard/JobCard'
-import { getOrderPrice } from '../../../lib/pricing'
-import { formatAmount, type OrderWithCustomer } from '../../../types/order'
+import BilanzCard from '../../../components/BilanzCard/BilanzCard'
+import type { OrderWithCustomer } from '../../../types/order'
 import './CompletedPage.css'
 
 function CompletedPage() {
   const { user } = useAuth()
-  const [preset, setPreset] = useState<DatePreset>('week')
+  const [preset, setPreset] = useState<DatePreset>('today')
   const [customFrom, setCustomFrom] = useState('')
   const [customTo, setCustomTo] = useState('')
   const [orders, setOrders] = useState<OrderWithCustomer[]>([])
@@ -44,13 +44,6 @@ function CompletedPage() {
       active = false
     }
   }, [user, preset, customFrom, customTo])
-
-  const completed = orders.filter((order) => order.status === 'completed')
-  const cancelledCount = orders.length - completed.length
-  const revenue = completed.reduce(
-    (sum, order) => sum + (getOrderPrice(order) ?? 0),
-    0,
-  )
 
   return (
     <div className="completed-page">
@@ -100,28 +93,10 @@ function CompletedPage() {
       </div>
 
       {!loading && orders.length > 0 && (
-        <section className="completed-summary" aria-label="Bilanz">
-          <h2 className="completed-summary__title">Bilanz</h2>
-          <div className="completed-summary__grid">
-            <div className="completed-summary__item">
-              <span className="completed-summary__value">{completed.length}</span>
-              <span className="completed-summary__label">Aufträge</span>
-            </div>
-            <div className="completed-summary__item">
-              <span className="completed-summary__value completed-summary__value--brand">
-                {formatAmount(revenue)}
-              </span>
-              <span className="completed-summary__label">Umsatz</span>
-            </div>
-          </div>
-          {cancelledCount > 0 && (
-            <p className="completed-summary__cancelled">
-              {cancelledCount === 1
-                ? '1 Auftrag storniert'
-                : `${cancelledCount} Aufträge storniert`}
-            </p>
-          )}
-        </section>
+        <BilanzCard
+          title={preset === 'today' ? 'Heute' : `Bilanz · ${DATE_PRESET_LABELS[preset]}`}
+          orders={orders}
+        />
       )}
     </div>
   )
