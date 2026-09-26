@@ -57,3 +57,7 @@
   line-height: 1;
   color: var(--color-text-secondary);
 }
+
+.home-page__tile {
+  margin-bottom: 16px;
+}

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import ContactButtons from '../../components/ContactButtons/ContactButtons'
 import { useAuth } from '../../context/useAuth'
 import './HomePage.css'
 
@@ -42,6 +43,8 @@ function HomePage() {
           ›
         </span>
       </Link>
+
+      <ContactButtons />
     </div>
   )
 }
