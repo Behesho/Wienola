@@ -5,7 +5,7 @@
  * phone / whatsapp: international format, e.g. "+43 660 1234567"
  */
 export const CONTACT = {
-  phone: '',
-  whatsapp: '',
-  email: '',
+  phone: '+436606060819',
+  whatsapp: '+436606060819',
+  email: 'info@abholance-wien.at',
 }
