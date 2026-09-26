@@ -65,7 +65,7 @@ function HomePage() {
 
       <ContactButtons />
 
-      <Link to="/dashboard/new-order" className="home-page__tile">
+      <Link to="/dashboard/new-order?type=letter" className="home-page__tile">
         <PackageIcon />
         <span className="home-page__tile-text">
           <span className="home-page__tile-title">Post Abholung</span>

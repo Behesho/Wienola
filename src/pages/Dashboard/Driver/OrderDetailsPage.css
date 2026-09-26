@@ -224,3 +224,10 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.order-details-page__photo-label {
+  margin: 16px 0 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}

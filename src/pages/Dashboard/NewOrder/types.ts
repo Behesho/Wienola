@@ -37,6 +37,8 @@ export type PayerChoice = 'pickup' | 'destination'
 export interface OrderFormData {
   transportType: TransportType | null
   photo: string | null
+  /** Post slip (Abholschein) picture, only for Brief/Post orders. */
+  slip: string | null
   length: number
   width: number
   height: number
@@ -58,6 +60,7 @@ export interface OrderFormData {
 export const INITIAL_ORDER_DATA: OrderFormData = {
   transportType: null,
   photo: null,
+  slip: null,
   length: 60,
   width: 40,
   height: 40,

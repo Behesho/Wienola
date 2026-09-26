@@ -19,7 +19,7 @@ function toDbRow(customerId: string, data: OrderFormData) {
     transport_type: data.transportType!,
     description: data.description || null,
     vehicle: data.vehicle,
-    photo_url: data.photo,
+    photo_url: data.photo ?? data.slip,
     length_cm: data.length,
     width_cm: data.width,
     height_cm: data.height,

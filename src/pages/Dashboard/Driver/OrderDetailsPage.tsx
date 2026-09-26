@@ -308,6 +308,9 @@ function OrderDetailsPage() {
             )}
           </dl>
 
+          {order.photo_url && order.transport_type === 'letter' && (
+            <p className="order-details-page__photo-label">Abholschein</p>
+          )}
           {order.photo_url && (
             <img
               src={order.photo_url}

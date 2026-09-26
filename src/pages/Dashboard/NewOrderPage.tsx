@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../context/useAuth'
 import { insertOrder } from '../../lib/orders'
 import { ChevronLeftIcon } from './NewOrder/icons'
@@ -57,11 +57,17 @@ function validateStep(stepKey: StepKey, data: OrderFormData): string | null {
 function NewOrderPage() {
   const navigate = useNavigate()
   const { user, profile } = useAuth()
-  const [stepIndex, setStepIndex] = useState(0)
+  // "Post Abholung" on the home page opens the form with Brief preselected,
+  // skipping the "Was möchtest du versenden?" step.
+  const [searchParams] = useSearchParams()
+  const presetType: TransportType | null =
+    searchParams.get('type') === 'letter' ? 'letter' : null
+  const [stepIndex, setStepIndex] = useState(presetType ? 1 : 0)
   // No contact step: the driver reaches the customer through the phone number
   // given at registration, stored on the order as contact_phone.
   const [data, setData] = useState<OrderFormData>({
     ...INITIAL_ORDER_DATA,
+    transportType: presetType,
     contactPhone: profile?.phone ?? '',
   })
   const [error, setError] = useState<string | null>(null)
@@ -194,6 +200,8 @@ function NewOrderPage() {
           <RouteStep
             pickup={data.pickup}
             destination={data.destination}
+            showSlip={data.transportType === 'letter'}
+            slip={data.slip}
             onChange={update}
           />
         )

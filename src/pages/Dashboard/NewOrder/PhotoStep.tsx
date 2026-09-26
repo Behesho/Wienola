@@ -1,5 +1,6 @@
 import { useRef, type ChangeEvent } from 'react'
 import { CameraIcon } from '../../../components/icons/NavIcons'
+import { imageFileToDataUrl } from '../../../lib/imageUpload'
 import './PhotoStep.css'
 
 interface PhotoStepProps {
@@ -10,9 +11,18 @@ interface PhotoStepProps {
 function PhotoStep({ photo, onChange }: PhotoStepProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
-  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
-    onChange(file ? URL.createObjectURL(file) : null)
+    if (!file) {
+      onChange(null)
+      return
+    }
+    try {
+      // A compressed data URL, so the driver can see the photo too.
+      onChange(await imageFileToDataUrl(file))
+    } catch {
+      onChange(null)
+    }
   }
 
   function handleRemove() {
