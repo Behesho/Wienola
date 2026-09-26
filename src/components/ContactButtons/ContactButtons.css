@@ -38,3 +38,7 @@
   height: 22px;
   color: var(--color-brand);
 }
+
+.contact-buttons {
+  margin-bottom: 16px;
+}

@@ -28,11 +28,11 @@ function PricesPage() {
         <PriceCalculator />
       </DashboardSection>
 
+      <ContactButtons />
+
       <DashboardSection title="Preisliste">
         <PriceList />
       </DashboardSection>
-
-      <ContactButtons />
     </div>
   )
 }
