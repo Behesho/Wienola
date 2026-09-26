@@ -40,9 +40,20 @@ function DriverHomePage() {
       )
       .subscribe()
 
+    // Once another driver takes an order it disappears from this driver's
+    // view without a realtime event, so also refresh when the app is
+    // brought back to the foreground and every 30 seconds.
+    function reloadIfVisible() {
+      if (document.visibilityState === 'visible') reload()
+    }
+    document.addEventListener('visibilitychange', reloadIfVisible)
+    const poll = window.setInterval(reloadIfVisible, 30000)
+
     return () => {
       active = false
       supabase.removeChannel(channel)
+      document.removeEventListener('visibilitychange', reloadIfVisible)
+      window.clearInterval(poll)
     }
   }, [])
 
@@ -51,7 +62,14 @@ function DriverHomePage() {
     const { data, error } = await acceptOrder(orderId, user.id)
     acknowledgeNewOrders()
 
-    if (error || !data) return false
+    if (error || !data) {
+      // Someone else was faster: show the message on the card for a moment,
+      // then drop it from the list.
+      window.setTimeout(() => {
+        setOrders((prev) => prev.filter((order) => order.id !== orderId))
+      }, 2500)
+      return false
+    }
 
     setOrders((prev) => prev.filter((order) => order.id !== orderId))
     return true
