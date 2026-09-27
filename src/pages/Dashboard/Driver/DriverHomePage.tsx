@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../../context/useAuth'
 import { supabase } from '../../../lib/supabase'
-import { acceptOrder, fetchOpenOrders } from '../../../lib/orders'
+import {
+  acceptOrder,
+  fetchOpenOrders,
+  fetchRejectedOrderIds,
+  rejectOrder,
+} from '../../../lib/orders'
 import { acknowledgeNewOrders } from '../../../lib/orderNotifications'
 import AvailableOrderCard from '../../../components/AvailableOrderCard/AvailableOrderCard'
 import EarningsSummary from '../../../components/EarningsSummary/EarningsSummary'
@@ -15,18 +20,27 @@ function DriverHomePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!user) return
     let active = true
 
-    function reload() {
-      fetchOpenOrders().then(({ data, error }) => {
-        if (!active) return
-        if (error) {
-          console.error('Failed to load open orders:', error.message)
-        } else {
-          setOrders(data ?? [])
-        }
+    async function reload() {
+      const [openResult, rejectedResult] = await Promise.all([
+        fetchOpenOrders(),
+        fetchRejectedOrderIds(user!.id),
+      ])
+      if (!active) return
+
+      if (openResult.error) {
+        console.error('Failed to load open orders:', openResult.error.message)
         setLoading(false)
-      })
+        return
+      }
+
+      const rejectedIds = new Set(
+        (rejectedResult.data ?? []).map((row) => row.order_id),
+      )
+      setOrders((openResult.data ?? []).filter((order) => !rejectedIds.has(order.id)))
+      setLoading(false)
     }
 
     reload()
@@ -55,7 +69,7 @@ function DriverHomePage() {
       document.removeEventListener('visibilitychange', reloadIfVisible)
       window.clearInterval(poll)
     }
-  }, [])
+  }, [user])
 
   async function handleAccept(orderId: string): Promise<boolean> {
     if (!user) return false
@@ -75,6 +89,13 @@ function DriverHomePage() {
     return true
   }
 
+  async function handleReject(orderId: string) {
+    if (!user) return
+    setOrders((prev) => prev.filter((order) => order.id !== orderId))
+    const { error } = await rejectOrder(orderId, user.id)
+    if (error) console.error('Failed to reject order:', error.message)
+  }
+
   return (
     <div className="driver-home-page">
       {user && <EarningsSummary driverId={user.id} />}
@@ -89,7 +110,12 @@ function DriverHomePage() {
         </p>
       ) : (
         orders.map((order) => (
-          <AvailableOrderCard key={order.id} order={order} onAccept={handleAccept} />
+          <AvailableOrderCard
+            key={order.id}
+            order={order}
+            onAccept={handleAccept}
+            onReject={handleReject}
+          />
         ))
       )}
 

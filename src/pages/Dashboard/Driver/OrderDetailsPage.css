@@ -272,3 +272,35 @@
   border-color: var(--color-brand);
   color: var(--color-brand);
 }
+
+.order-details-page__open-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.order-details-page__open-actions .order-details-page__cta {
+  flex: 1;
+  width: auto;
+  margin-bottom: 0;
+}
+
+.order-details-page__reject {
+  flex: 1;
+  height: 50px;
+  border-radius: 12px;
+  border: 1px solid rgba(226, 55, 63, 0.5);
+  background: none;
+  color: var(--color-danger);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.order-details-page__reject:hover:not(:disabled) {
+  background: rgba(226, 55, 63, 0.1);
+}
+
+.order-details-page__reject:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

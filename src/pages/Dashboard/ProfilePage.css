@@ -59,3 +59,14 @@
   font-weight: 600;
   color: var(--color-brand);
 }
+
+.profile-page__admin-link {
+  display: inline-block;
+  color: var(--color-brand);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.profile-page__admin-link:hover {
+  text-decoration: underline;
+}

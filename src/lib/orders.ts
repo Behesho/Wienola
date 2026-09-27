@@ -109,6 +109,64 @@ export async function fetchOpenOrderIds() {
   return supabase.from('orders').select('id').eq('status', 'open').returns<{ id: string }[]>()
 }
 
+/** Ids of orders this driver has already declined — filtered out of their list. */
+export async function fetchRejectedOrderIds(driverId: string) {
+  return supabase
+    .from('order_rejections')
+    .select('order_id')
+    .eq('driver_id', driverId)
+    .returns<{ order_id: string }[]>()
+}
+
+/** Declines an open order — hides it from this driver only, others still see it. */
+export async function rejectOrder(orderId: string, driverId: string) {
+  return supabase
+    .from('order_rejections')
+    .insert({ order_id: orderId, driver_id: driverId })
+}
+
+// --- Admin: assign an open order to exactly one driver ---------------------
+
+export interface DriverOption {
+  id: string
+  full_name: string | null
+  phone: string | null
+}
+
+export async function fetchDrivers() {
+  return supabase
+    .from('profiles')
+    .select('id, full_name, phone')
+    .eq('role', 'dienstleister')
+    .order('full_name')
+    .returns<DriverOption[]>()
+}
+
+const ADMIN_ORDER_SELECT = '*, assigned:profiles!assigned_driver_id(full_name)'
+
+export interface OrderWithAssignment extends Order {
+  assigned: { full_name: string | null } | null
+}
+
+export async function fetchOpenOrdersForAdmin() {
+  return supabase
+    .from('orders')
+    .select(ADMIN_ORDER_SELECT)
+    .eq('status', 'open')
+    .order('created_at', { ascending: false })
+    .returns<OrderWithAssignment[]>()
+}
+
+/** Pass `null` to unassign — the order becomes visible to every driver again. */
+export async function assignOrderToDriver(orderId: string, driverId: string | null) {
+  return supabase
+    .from('orders')
+    .update({ assigned_driver_id: driverId })
+    .eq('id', orderId)
+    .select(ADMIN_ORDER_SELECT)
+    .maybeSingle<OrderWithAssignment>()
+}
+
 export async function fetchMyJobs(driverId: string) {
   return supabase
     .from('orders')

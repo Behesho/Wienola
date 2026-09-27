@@ -94,11 +94,18 @@
 
 .available-order-card__actions {
   display: flex;
+  flex-direction: column;
   gap: 10px;
   margin-top: 16px;
 }
 
+.available-order-card__actions-row {
+  display: flex;
+  gap: 10px;
+}
+
 .available-order-card__view {
+  width: 100%;
   flex: 1;
   display: flex;
   align-items: center;
@@ -134,7 +141,25 @@
   filter: brightness(1.08);
 }
 
-.available-order-card__accept:disabled {
+.available-order-card__accept:disabled,
+.available-order-card__reject:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.available-order-card__reject {
+  flex: 1;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(226, 55, 63, 0.5);
+  background: none;
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.available-order-card__reject:hover:not(:disabled) {
+  background: rgba(226, 55, 63, 0.1);
 }

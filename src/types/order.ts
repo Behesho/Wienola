@@ -17,6 +17,8 @@ export interface Order {
   id: string
   customer_id: string
   driver_id: string | null
+  /** Set by an admin to show this open order to only that one driver. */
+  assigned_driver_id: string | null
   status: OrderStatus
   transport_type: TransportType
   description: string | null

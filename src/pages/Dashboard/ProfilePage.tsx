@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { PersonIcon } from '../../components/icons/NavIcons'
 import RoleBadge from '../../components/RoleBadge/RoleBadge'
 import DashboardSection from '../../components/DashboardSection/DashboardSection'
@@ -55,6 +55,14 @@ function ProfilePage() {
       {role === 'dienstleister' && (
         <DashboardSection title="Benachrichtigungen">
           <DriverNotificationSettings />
+        </DashboardSection>
+      )}
+
+      {profile?.is_admin && (
+        <DashboardSection title="Admin">
+          <Link to="/dashboard/admin" className="profile-page__admin-link">
+            Aufträge zuweisen
+          </Link>
         </DashboardSection>
       )}
 

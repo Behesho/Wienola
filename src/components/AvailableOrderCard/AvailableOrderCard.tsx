@@ -29,13 +29,16 @@ const VEHICLE_ICONS = {
 interface AvailableOrderCardProps {
   order: Order
   onAccept: (orderId: string) => Promise<boolean>
+  onReject: (orderId: string) => Promise<void>
 }
 
-function AvailableOrderCard({ order, onAccept }: AvailableOrderCardProps) {
+function AvailableOrderCard({ order, onAccept, onReject }: AvailableOrderCardProps) {
   const [accepting, setAccepting] = useState(false)
+  const [rejecting, setRejecting] = useState(false)
   const [failed, setFailed] = useState(false)
   const VehicleIcon = order.vehicle ? VEHICLE_ICONS[order.vehicle] : null
   const amount = formatAmount(getOrderPrice(order))
+  const busy = accepting || rejecting
 
   async function handleAccept() {
     setAccepting(true)
@@ -43,6 +46,12 @@ function AvailableOrderCard({ order, onAccept }: AvailableOrderCardProps) {
     const success = await onAccept(order.id)
     setAccepting(false)
     if (!success) setFailed(true)
+  }
+
+  async function handleReject() {
+    setRejecting(true)
+    await onReject(order.id)
+    // No need to reset `rejecting` — the card is removed by the parent.
   }
 
   return (
@@ -90,17 +99,27 @@ function AvailableOrderCard({ order, onAccept }: AvailableOrderCardProps) {
       )}
 
       <div className="available-order-card__actions">
+        <div className="available-order-card__actions-row">
+          <button
+            type="button"
+            className="available-order-card__reject"
+            onClick={handleReject}
+            disabled={busy}
+          >
+            {rejecting ? 'Wird abgelehnt…' : 'Ablehnen'}
+          </button>
+          <button
+            type="button"
+            className="available-order-card__accept"
+            onClick={handleAccept}
+            disabled={busy}
+          >
+            {accepting ? 'Wird angenommen…' : 'Annehmen'}
+          </button>
+        </div>
         <Link to={`/dashboard/jobs/${order.id}`} className="available-order-card__view">
           Auftrag ansehen
         </Link>
-        <button
-          type="button"
-          className="available-order-card__accept"
-          onClick={handleAccept}
-          disabled={accepting}
-        >
-          {accepting ? 'Wird angenommen…' : 'Annehmen'}
-        </button>
       </div>
     </div>
   )

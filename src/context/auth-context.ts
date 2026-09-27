@@ -8,6 +8,7 @@ export interface Profile {
   full_name: string | null
   phone: string | null
   email: string | null
+  is_admin: boolean
   role: UserRole
   created_at: string
   updated_at: string

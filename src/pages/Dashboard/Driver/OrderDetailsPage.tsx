@@ -1,7 +1,13 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../../../context/useAuth'
-import { acceptOrder, advanceOrderStatus, cancelOrder, fetchOrderById } from '../../../lib/orders'
+import {
+  acceptOrder,
+  advanceOrderStatus,
+  cancelOrder,
+  fetchOrderById,
+  rejectOrder,
+} from '../../../lib/orders'
 import { acknowledgeNewOrders } from '../../../lib/orderNotifications'
 import { formatDateTime } from '../../../lib/formatDate'
 import { getOrderPrice } from '../../../lib/pricing'
@@ -93,6 +99,20 @@ function OrderDetailsPage() {
     const { data: refreshed } = await fetchOrderById(order.id)
     setBusy(false)
     if (refreshed) setOrder(refreshed)
+  }
+
+  async function handleReject() {
+    if (!user || !order) return
+    setBusy(true)
+    setError(null)
+    const { error: rejectError } = await rejectOrder(order.id, user.id)
+    setBusy(false)
+
+    if (rejectError) {
+      setError('Auftrag konnte nicht abgelehnt werden. Bitte versuche es erneut.')
+      return
+    }
+    navigate('/dashboard')
   }
 
   async function handleAdvance() {
@@ -370,14 +390,24 @@ function OrderDetailsPage() {
       {error && <p className="order-details-page__error">{error}</p>}
 
       {order.status === 'open' && (
-        <button
-          type="button"
-          className="order-details-page__cta"
-          onClick={handleAccept}
-          disabled={busy}
-        >
-          {busy ? 'Wird angenommen…' : 'Auftrag annehmen'}
-        </button>
+        <div className="order-details-page__open-actions">
+          <button
+            type="button"
+            className="order-details-page__reject"
+            onClick={handleReject}
+            disabled={busy}
+          >
+            Ablehnen
+          </button>
+          <button
+            type="button"
+            className="order-details-page__cta"
+            onClick={handleAccept}
+            disabled={busy}
+          >
+            {busy ? 'Wird angenommen…' : 'Auftrag annehmen'}
+          </button>
+        </div>
       )}
 
       {advance && order.driver_id === user?.id && (
