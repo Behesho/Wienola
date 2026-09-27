@@ -100,6 +100,15 @@ export async function fetchOpenOrders() {
     .returns<Order[]>()
 }
 
+/**
+ * Just the ids of open orders — used to poll for new arrivals as a fallback
+ * to the realtime subscription, whose WebSocket can drop silently on some
+ * mobile browsers/networks (seen on iOS Chrome) without ever reconnecting.
+ */
+export async function fetchOpenOrderIds() {
+  return supabase.from('orders').select('id').eq('status', 'open').returns<{ id: string }[]>()
+}
+
 export async function fetchMyJobs(driverId: string) {
   return supabase
     .from('orders')
