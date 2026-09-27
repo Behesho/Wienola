@@ -56,6 +56,9 @@ export interface OrderFormData {
   destinationFloor: string
   destinationElevator: ElevatorAnswer
   contactPhone: string
+  /** Guests only: not in any profile yet, so asked for in the route step. */
+  guestName: string
+  guestEmail: string
 }
 
 export const INITIAL_ORDER_DATA: OrderFormData = {
@@ -78,6 +81,8 @@ export const INITIAL_ORDER_DATA: OrderFormData = {
   destinationFloor: '',
   destinationElevator: null,
   contactPhone: '',
+  guestName: '',
+  guestEmail: '',
 }
 
 export type StepKey =

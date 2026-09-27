@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../context/useAuth'
-import { insertOrder, sendInvoiceEmail } from '../../lib/orders'
+import { insertOrder, sendInvoiceEmail, updateProfile } from '../../lib/orders'
 import { ChevronLeftIcon } from './NewOrder/icons'
 import TransportTypeStep from './NewOrder/TransportTypeStep'
 import PhotoStep from './NewOrder/PhotoStep'
@@ -23,7 +23,11 @@ import {
 } from './NewOrder/types'
 import './NewOrderPage.css'
 
-function validateStep(stepKey: StepKey, data: OrderFormData): string | null {
+function validateStep(
+  stepKey: StepKey,
+  data: OrderFormData,
+  isGuest: boolean,
+): string | null {
   switch (stepKey) {
     case 'type':
       return data.transportType ? null : 'Bitte wähle eine Auftragsart aus.'
@@ -40,10 +44,24 @@ function validateStep(stepKey: StepKey, data: OrderFormData): string | null {
         : 'Bitte beschreibe, was transportiert werden soll.'
     case 'vehicle':
       return data.vehicle ? null : 'Bitte wähle ein Fahrzeug aus.'
-    case 'route':
-      return isAddressComplete(data.pickup) && isAddressComplete(data.destination)
-        ? null
-        : 'Bitte vervollständige Abholung und Ziel.'
+    case 'route': {
+      if (!isAddressComplete(data.pickup) || !isAddressComplete(data.destination)) {
+        return 'Bitte vervollständige Abholung und Ziel.'
+      }
+      if (isGuest) {
+        if (
+          !data.guestName.trim() ||
+          !data.contactPhone.trim() ||
+          !data.guestEmail.trim()
+        ) {
+          return 'Bitte gib Name, Telefonnummer und E-Mail-Adresse ein.'
+        }
+        if (!/^\S+@\S+\.\S+$/.test(data.guestEmail.trim())) {
+          return 'Bitte gib eine gültige E-Mail-Adresse ein.'
+        }
+      }
+      return null
+    }
     case 'schedule':
       if (!data.express && !(data.date && data.time)) {
         return 'Bitte wähle einen Termin oder „So schnell wie möglich“.'
@@ -67,12 +85,17 @@ function NewOrderPage() {
         ? 'willhaben'
         : null
   const [stepIndex, setStepIndex] = useState(presetType ? 1 : 0)
-  // No contact step: the driver reaches the customer through the phone number
-  // given at registration, stored on the order as contact_phone.
+  // Guests have no profile yet, so the route step asks them directly.
+  const isGuest = user?.is_anonymous ?? false
+  // No contact step for registered customers: the driver reaches them
+  // through the phone number given at registration, stored on the order as
+  // contact_phone.
   const [data, setData] = useState<OrderFormData>({
     ...INITIAL_ORDER_DATA,
     transportType: presetType,
     contactPhone: profile?.phone ?? '',
+    guestName: profile?.full_name ?? '',
+    guestEmail: profile?.email ?? '',
   })
   const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
@@ -116,7 +139,7 @@ function NewOrderPage() {
   }
 
   async function handleNext() {
-    const validationError = validateStep(currentStep, data)
+    const validationError = validateStep(currentStep, data, isGuest)
     if (validationError) {
       setError(validationError)
       return
@@ -134,6 +157,18 @@ function NewOrderPage() {
     }
 
     setSubmitting(true)
+
+    if (isGuest) {
+      const { error: profileError } = await updateProfile(user.id, {
+        full_name: data.guestName.trim(),
+        phone: data.contactPhone.trim(),
+        email: data.guestEmail.trim(),
+      })
+      if (profileError) {
+        console.error('Failed to save guest contact info:', profileError.message)
+      }
+    }
+
     const { data: created, error: insertError } = await insertOrder(user.id, {
       ...data,
       // A photo picked before switching to bike/car must not be sent.
@@ -217,6 +252,10 @@ function NewOrderPage() {
             }
             slipVariant={data.transportType === 'willhaben' ? 'willhaben' : 'post'}
             slip={data.slip}
+            showContact={isGuest}
+            guestName={data.guestName}
+            guestEmail={data.guestEmail}
+            contactPhone={data.contactPhone}
             onChange={update}
           />
         )

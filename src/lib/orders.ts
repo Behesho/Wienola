@@ -13,6 +13,14 @@ const ACTIVE_STATUSES: OrderStatus[] = [
 const CUSTOMER_SELECT = '*, customer:profiles!customer_id(full_name, phone, email)'
 const DRIVER_SELECT = '*, driver:profiles!driver_id(full_name, phone)'
 
+/** Guests have no profile yet — this fills it in from what they typed on the route step. */
+export async function updateProfile(
+  userId: string,
+  patch: { full_name?: string; phone?: string; email?: string },
+) {
+  return supabase.from('profiles').update(patch).eq('id', userId)
+}
+
 function toDbRow(customerId: string, data: OrderFormData) {
   return {
     customer_id: customerId,

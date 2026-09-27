@@ -11,6 +11,29 @@ function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [guestSubmitting, setGuestSubmitting] = useState(false)
+
+  async function handleGuestContinue() {
+    setError('')
+    setGuestSubmitting(true)
+
+    // No form here — we only need contact details once the guest actually
+    // places an order, asked for right there in the order form.
+    const { error: signInError } = await supabase.auth.signInAnonymously()
+
+    setGuestSubmitting(false)
+
+    if (signInError) {
+      setError(
+        signInError.status === 429
+          ? 'Zu viele Versuche. Bitte warte einen Moment und versuche es erneut.'
+          : 'Der Gastzugang ist derzeit nicht verfügbar. Bitte registriere dich oder versuche es später erneut.',
+      )
+      return
+    }
+
+    navigate('/dashboard')
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -83,9 +106,14 @@ function LoginPage() {
           <span>oder</span>
         </div>
 
-        <Link to="/guest" className="auth__guest">
-          Als Gast fortfahren
-        </Link>
+        <button
+          type="button"
+          className="auth__guest"
+          onClick={handleGuestContinue}
+          disabled={guestSubmitting}
+        >
+          {guestSubmitting ? 'Einen Moment…' : 'Als Gast fortfahren'}
+        </button>
 
         <p className="auth__switch">
           Noch kein Konto? <Link to="/register">Jetzt registrieren</Link>

@@ -28,9 +28,10 @@ function playTone(ctx: AudioContext, frequency: number, startTime: number, durat
   oscillator.type = 'sine'
   oscillator.frequency.setValueAtTime(frequency, startTime)
 
-  // Soft attack/decay envelope so it's noticeable but not harsh.
+  // Punchier attack/decay than a soft UI blip — this has to cut through a
+  // driver's pocket or car noise, not just sound nice at a desk.
   gain.gain.setValueAtTime(0, startTime)
-  gain.gain.linearRampToValueAtTime(0.16, startTime + 0.03)
+  gain.gain.linearRampToValueAtTime(0.35, startTime + 0.02)
   gain.gain.linearRampToValueAtTime(0, startTime + duration)
 
   oscillator.connect(gain)
@@ -39,18 +40,35 @@ function playTone(ctx: AudioContext, frequency: number, startTime: number, durat
   oscillator.stop(startTime + duration)
 }
 
+/** Buzzes the phone, where supported — works even if the ringer is muted. */
+function vibrate(pattern: number | number[]) {
+  try {
+    navigator.vibrate?.(pattern)
+  } catch {
+    // Vibration API unavailable — ignore.
+  }
+}
+
 /** Plays one chime immediately. Returns false if audio couldn't play (e.g. autoplay-blocked). */
 export function playChimeOnce(): boolean {
   const ctx = getContext()
+  vibrate([180, 90, 180])
   if (!ctx) return false
 
   try {
     if (ctx.state === 'suspended') {
-      void ctx.resume()
+      // Resuming is async; schedule the tones once it actually resumes so a
+      // context that's still waking up doesn't silently drop the sound.
+      void ctx.resume().then(() => {
+        const now = ctx.currentTime
+        playTone(ctx, 880, now, 0.18)
+        playTone(ctx, 1175, now + 0.16, 0.22)
+      })
+      return true
     }
     const now = ctx.currentTime
-    playTone(ctx, 880, now, 0.16)
-    playTone(ctx, 1175, now + 0.14, 0.2)
+    playTone(ctx, 880, now, 0.18)
+    playTone(ctx, 1175, now + 0.16, 0.22)
     return true
   } catch {
     return false
@@ -104,5 +122,17 @@ export function installAudioUnlock(): () => void {
   events.forEach((name) => window.addEventListener(name, handler, { passive: true }))
   // Also try right away: works when the page was already interacted with.
   unlockAudio()
-  return remove
+
+  // Mobile browsers suspend the AudioContext whenever the tab/app is
+  // backgrounded (screen locked, app switched away) — re-resume it every
+  // time the driver comes back, so a chime a minute later isn't silent.
+  function handleVisibility() {
+    if (document.visibilityState === 'visible') unlockAudio()
+  }
+  document.addEventListener('visibilitychange', handleVisibility)
+
+  return () => {
+    remove()
+    document.removeEventListener('visibilitychange', handleVisibility)
+  }
 }
