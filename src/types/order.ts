@@ -10,7 +10,9 @@ export type OrderStatus =
   | 'cancelled'
 
 export type PaymentStatus = 'paid' | 'unpaid'
-export type Payer = 'pickup' | 'destination'
+/** 'pickup'/'destination' are legacy values from older orders (who paid);
+ *  new orders use 'cash'/'card' (how they pay). */
+export type Payer = 'pickup' | 'destination' | 'cash' | 'card'
 
 /** Row shape of public.orders, as returned by Supabase. */
 export interface Order {
@@ -101,6 +103,8 @@ export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
 export const PAYER_LABELS: Record<Payer, string> = {
   pickup: 'Abholadresse',
   destination: 'Zustelladresse',
+  cash: 'Bar',
+  card: 'Online mit Karte',
 }
 
 export const TRANSPORT_TYPE_LABELS: Record<TransportType, string> = {

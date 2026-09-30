@@ -6,6 +6,8 @@ import './RouteStep.css'
 interface RouteStepProps {
   pickup: AddressValue
   destination: AddressValue
+  /** Defaults to "Transportstrecke". */
+  heading?: string
   /** Set for Brief/Post orders: shows the Abholschein upload. */
   showSlip?: boolean
   slipVariant?: 'post' | 'willhaben' | 'billa'
@@ -28,6 +30,7 @@ interface RouteStepProps {
 function RouteStep({
   pickup,
   destination,
+  heading = 'Transportstrecke',
   showSlip = false,
   slipVariant = 'post',
   slip = null,
@@ -39,7 +42,7 @@ function RouteStep({
 }: RouteStepProps) {
   return (
     <div className="route-step">
-      <h2 className="order-step__heading">Transportstrecke</h2>
+      <h2 className="order-step__heading">{heading}</h2>
 
       {showContact && (
         <div className="route-step__contact">

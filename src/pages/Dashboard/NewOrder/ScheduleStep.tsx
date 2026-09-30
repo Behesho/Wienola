@@ -3,8 +3,8 @@ import type { PayerChoice } from './types'
 import './ScheduleStep.css'
 
 const PAYER_OPTIONS: { value: PayerChoice; label: string }[] = [
-  { value: 'pickup', label: 'Abholadresse' },
-  { value: 'destination', label: 'Zustelladresse' },
+  { value: 'cash', label: 'Bar' },
+  { value: 'card', label: 'Online mit Karte' },
 ]
 
 interface ScheduleStepProps {
@@ -81,7 +81,7 @@ function ScheduleStep({
       </button>
 
       <div className="schedule-step__payer">
-        <span className="schedule-step__payer-title">Wer bezahlt?</span>
+        <span className="schedule-step__payer-title">Zahlungsart</span>
         <div className="schedule-step__payer-options">
           {PAYER_OPTIONS.map((option) => (
             <button

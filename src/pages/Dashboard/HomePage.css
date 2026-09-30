@@ -58,25 +58,31 @@
   color: var(--color-text-secondary);
 }
 
-/* Billa Click & Collect — themed in the partner's own red/white instead of
-   the app's green, so it reads as an outside service, not our own action. */
+/* Billa Click & Collect — same neutral card as the other tiles, with a
+   diagonal yellow stripe accent (Billa's own colour) instead of a solid
+   red fill, plus the white "BILLA" badge in place of a generic icon. */
 .home-page__tile--billa {
-  background: linear-gradient(135deg, #e2001a, #a8000f);
-  border-color: transparent;
-  color: #fff;
+  position: relative;
+  overflow: hidden;
 }
 
-.home-page__tile--billa:hover {
-  border-color: transparent;
-  filter: brightness(1.06);
+.home-page__tile--billa::before {
+  content: '';
+  position: absolute;
+  inset: -30% -10%;
+  background: repeating-linear-gradient(
+    124deg,
+    transparent 0px,
+    transparent 16px,
+    #ffcc00 16px,
+    #ffcc00 22px
+  );
+  opacity: 0.35;
+  pointer-events: none;
 }
 
-.home-page__tile--billa .home-page__tile-subtitle {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.home-page__tile--billa .home-page__tile-arrow {
-  color: rgba(255, 255, 255, 0.85);
+.home-page__tile--billa > * {
+  position: relative;
 }
 
 .home-page__tile-billa-badge {

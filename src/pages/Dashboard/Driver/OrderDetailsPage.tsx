@@ -290,7 +290,7 @@ function OrderDetailsPage() {
         <dl className="order-details-page__payment">
           {order.payer && (
             <>
-              <dt>Wer bezahlt?</dt>
+              <dt>Zahlungsart</dt>
               <dd>{PAYER_LABELS[order.payer]}</dd>
             </>
           )}

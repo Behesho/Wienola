@@ -55,6 +55,8 @@ const VEHICLE: Record<string, string> = {
 const PAYER: Record<string, string> = {
   pickup: 'Abholadresse',
   destination: 'Zustelladresse',
+  cash: 'Bar',
+  card: 'Online mit Karte',
 }
 
 interface OrderRow {
@@ -158,7 +160,7 @@ function buildInvoiceHtml({ order, customerName, customerPhone, logoUrl }: Invoi
     `Auftragsart: ${TRANSPORT_TYPE[order.transport_type] ?? order.transport_type}`,
     order.vehicle ? `Fahrzeug: ${VEHICLE[order.vehicle] ?? order.vehicle}` : '',
     `Termin: ${scheduleText(order)}`,
-    order.payer ? `Zahlung durch: ${PAYER[order.payer] ?? order.payer}` : '',
+    order.payer ? `Zahlungsart: ${PAYER[order.payer] ?? order.payer}` : '',
   ].filter(Boolean)
 
   let priceCells: string

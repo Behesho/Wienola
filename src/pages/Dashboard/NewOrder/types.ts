@@ -34,7 +34,7 @@ export const EMPTY_ADDRESS: AddressValue = {
   unit: '',
 }
 
-export type PayerChoice = 'pickup' | 'destination'
+export type PayerChoice = 'cash' | 'card'
 
 export interface OrderFormData {
   transportType: TransportType | null
@@ -134,10 +134,14 @@ export function getStepSequence(
       'schedule',
     ]
   }
+  if (type === 'billa') {
+    // A click & collect pickup needs no free-text description.
+    return ['type', 'vehicle', 'route', 'schedule']
+  }
   if (type === null) {
     return ['type']
   }
-  // letter, courier, valuable, disposal, willhaben, billa
+  // letter, courier, valuable, disposal, willhaben
   return ['type', 'details', 'vehicle', 'route', 'schedule']
 }
 

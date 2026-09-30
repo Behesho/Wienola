@@ -66,7 +66,7 @@ function validateStep(
       if (!data.express && !(data.date && data.time)) {
         return 'Bitte wähle einen Termin oder „So schnell wie möglich“.'
       }
-      return data.payer ? null : 'Bitte gib an, wer bezahlt.'
+      return data.payer ? null : 'Bitte wähle eine Zahlungsart.'
     default:
       return null
   }
@@ -246,6 +246,11 @@ function NewOrderPage() {
           <RouteStep
             pickup={data.pickup}
             destination={data.destination}
+            heading={
+              data.transportType === 'billa'
+                ? 'Billa Click & Collect Zustellung'
+                : undefined
+            }
             showSlip={
               data.transportType === 'letter' ||
               data.transportType === 'willhaben' ||
