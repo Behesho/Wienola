@@ -59,6 +59,25 @@ function BagIcon() {
   )
 }
 
+function BasketIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="home-page__tile-icon"
+    >
+      <path d="M4.5 9h15l-1.4 9.2a2 2 0 0 1-2 1.8H7.9a2 2 0 0 1-2-1.8L4.5 9Z" />
+      <path d="M8 9V7a4 4 0 0 1 8 0v2" />
+      <path d="M8.5 12.5v4M15.5 12.5v4" />
+    </svg>
+  )
+}
+
 function HomePage() {
   const { profile } = useAuth()
 
@@ -109,13 +128,10 @@ function HomePage() {
         </span>
       </Link>
 
-      <Link
-        to="/dashboard/new-order?type=billa"
-        className="home-page__tile home-page__tile--billa"
-      >
-        <span className="home-page__tile-billa-badge">BILLA</span>
+      <Link to="/dashboard/new-order?type=billa" className="home-page__tile">
+        <BasketIcon />
         <span className="home-page__tile-text">
-          <span className="home-page__tile-title">Click &amp; Collect</span>
+          <span className="home-page__tile-title">Billa Click &amp; Collect</span>
           <span className="home-page__tile-subtitle">
             Bestellung an der Filiale abholen lassen
           </span>

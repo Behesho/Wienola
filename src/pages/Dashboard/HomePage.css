@@ -58,48 +58,6 @@
   color: var(--color-text-secondary);
 }
 
-/* Billa Click & Collect — same neutral card as the other tiles, with a
-   diagonal yellow stripe accent (Billa's own colour) instead of a solid
-   red fill, plus the white "BILLA" badge in place of a generic icon. */
-.home-page__tile--billa {
-  position: relative;
-  overflow: hidden;
-}
-
-.home-page__tile--billa::before {
-  content: '';
-  position: absolute;
-  inset: -30% -10%;
-  background: repeating-linear-gradient(
-    124deg,
-    transparent 0px,
-    transparent 16px,
-    #ffcc00 16px,
-    #ffcc00 22px
-  );
-  opacity: 0.35;
-  pointer-events: none;
-}
-
-.home-page__tile--billa > * {
-  position: relative;
-}
-
-.home-page__tile-billa-badge {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 54px;
-  height: 34px;
-  border-radius: 8px;
-  background: #fff;
-  color: #e2001a;
-  font-size: 0.72rem;
-  font-weight: 900;
-  letter-spacing: 0.02em;
-}
-
 .home-page__tile {
   margin-bottom: 16px;
 }
