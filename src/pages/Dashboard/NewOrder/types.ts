@@ -135,8 +135,9 @@ export function getStepSequence(
     ]
   }
   if (type === 'billa') {
-    // A click & collect pickup needs no free-text description.
-    return ['type', 'vehicle', 'route', 'schedule']
+    // A click & collect pickup needs no free-text description or vehicle
+    // choice.
+    return ['type', 'route', 'schedule']
   }
   if (type === null) {
     return ['type']
