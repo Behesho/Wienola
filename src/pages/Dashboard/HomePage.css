@@ -58,6 +58,42 @@
   color: var(--color-text-secondary);
 }
 
+/* Billa Click & Collect — themed in the partner's own red/white instead of
+   the app's green, so it reads as an outside service, not our own action. */
+.home-page__tile--billa {
+  background: linear-gradient(135deg, #e2001a, #a8000f);
+  border-color: transparent;
+  color: #fff;
+}
+
+.home-page__tile--billa:hover {
+  border-color: transparent;
+  filter: brightness(1.06);
+}
+
+.home-page__tile--billa .home-page__tile-subtitle {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.home-page__tile--billa .home-page__tile-arrow {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.home-page__tile-billa-badge {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 34px;
+  border-radius: 8px;
+  background: #fff;
+  color: #e2001a;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
 .home-page__tile {
   margin-bottom: 16px;
 }

@@ -78,12 +78,11 @@ function NewOrderPage() {
   // "Post Abholung" / "Willhaben" on the home page open the form with the type preselected,
   // skipping the "Was möchtest du versenden?" step.
   const [searchParams] = useSearchParams()
+  const presetTypeParam = searchParams.get('type')
   const presetType: TransportType | null =
-    searchParams.get('type') === 'letter'
-      ? 'letter'
-      : searchParams.get('type') === 'willhaben'
-        ? 'willhaben'
-        : null
+    presetTypeParam === 'letter' || presetTypeParam === 'willhaben' || presetTypeParam === 'billa'
+      ? presetTypeParam
+      : null
   const [stepIndex, setStepIndex] = useState(presetType ? 1 : 0)
   // Guests have no profile yet, so the route step asks them directly.
   const isGuest = user?.is_anonymous ?? false
@@ -248,9 +247,17 @@ function NewOrderPage() {
             pickup={data.pickup}
             destination={data.destination}
             showSlip={
-              data.transportType === 'letter' || data.transportType === 'willhaben'
+              data.transportType === 'letter' ||
+              data.transportType === 'willhaben' ||
+              data.transportType === 'billa'
             }
-            slipVariant={data.transportType === 'willhaben' ? 'willhaben' : 'post'}
+            slipVariant={
+              data.transportType === 'willhaben'
+                ? 'willhaben'
+                : data.transportType === 'billa'
+                  ? 'billa'
+                  : 'post'
+            }
             slip={data.slip}
             showContact={isGuest}
             guestName={data.guestName}

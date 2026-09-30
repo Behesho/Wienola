@@ -372,9 +372,15 @@ function OrderDetailsPage() {
           </dl>
 
           {order.photo_url &&
-            (order.transport_type === 'letter' || order.transport_type === 'willhaben') && (
+            (order.transport_type === 'letter' ||
+              order.transport_type === 'willhaben' ||
+              order.transport_type === 'billa') && (
             <p className="order-details-page__photo-label">
-              {order.transport_type === 'willhaben' ? 'Willhaben-Beleg' : 'Abholschein'}
+              {order.transport_type === 'willhaben'
+                ? 'Willhaben-Beleg'
+                : order.transport_type === 'billa'
+                  ? 'Bestellbestätigung'
+                  : 'Abholschein'}
             </p>
           )}
           {order.photo_url && (

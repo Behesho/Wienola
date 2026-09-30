@@ -108,6 +108,22 @@ function HomePage() {
           ›
         </span>
       </Link>
+
+      <Link
+        to="/dashboard/new-order?type=billa"
+        className="home-page__tile home-page__tile--billa"
+      >
+        <span className="home-page__tile-billa-badge">BILLA</span>
+        <span className="home-page__tile-text">
+          <span className="home-page__tile-title">Click &amp; Collect</span>
+          <span className="home-page__tile-subtitle">
+            Bestellung an der Filiale abholen lassen
+          </span>
+        </span>
+        <span className="home-page__tile-arrow" aria-hidden="true">
+          ›
+        </span>
+      </Link>
     </div>
   )
 }

@@ -10,6 +10,7 @@ export type TransportType =
   | 'valuable'
   | 'other'
   | 'willhaben'
+  | 'billa'
 
 export type ElevatorAnswer = 'yes' | 'no' | null
 
@@ -136,7 +137,7 @@ export function getStepSequence(
   if (type === null) {
     return ['type']
   }
-  // letter, courier, valuable, disposal
+  // letter, courier, valuable, disposal, willhaben, billa
   return ['type', 'details', 'vehicle', 'route', 'schedule']
 }
 

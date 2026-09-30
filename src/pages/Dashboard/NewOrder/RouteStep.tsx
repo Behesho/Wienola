@@ -8,7 +8,7 @@ interface RouteStepProps {
   destination: AddressValue
   /** Set for Brief/Post orders: shows the Abholschein upload. */
   showSlip?: boolean
-  slipVariant?: 'post' | 'willhaben'
+  slipVariant?: 'post' | 'willhaben' | 'billa'
   slip?: string | null
   /** Set for guests: they have no profile yet, so ask for contact details here. */
   showContact?: boolean

@@ -42,6 +42,7 @@ const TRANSPORT_TYPE: Record<string, string> = {
   valuable: 'Werttransport',
   other: 'Sonstiges',
   willhaben: 'Willhaben-Abholung',
+  billa: 'Billa Click & Collect',
 }
 
 const VEHICLE: Record<string, string> = {

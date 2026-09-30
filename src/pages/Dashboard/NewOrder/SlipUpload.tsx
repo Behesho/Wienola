@@ -5,7 +5,7 @@ import './SlipUpload.css'
 
 interface SlipUploadProps {
   slip: string | null
-  variant?: 'post' | 'willhaben'
+  variant?: 'post' | 'willhaben' | 'billa'
   onChange: (slip: string | null) => void
 }
 
@@ -21,6 +21,12 @@ const TEXTS = {
     cta: '+ Beleg hochladen',
     hint: 'Screenshot der Anzeige oder der Nachricht des Verkäufers',
     alt: 'Willhaben-Beleg',
+  },
+  billa: {
+    heading: 'Bestellbestätigung',
+    cta: '+ Beleg hochladen',
+    hint: 'Screenshot oder Foto deiner Billa-Bestellbestätigung',
+    alt: 'Bestellbestätigung',
   },
 }
 

@@ -113,6 +113,7 @@ export const TRANSPORT_TYPE_LABELS: Record<TransportType, string> = {
   valuable: 'Werttransport',
   other: 'Sonstiges',
   willhaben: 'Willhaben-Abholung',
+  billa: 'Billa Click & Collect',
 }
 
 export const VEHICLE_LABELS: Record<VehicleType, string> = {
