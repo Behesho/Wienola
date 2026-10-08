@@ -1,4 +1,6 @@
 .available-order-card {
+  position: relative;
+  isolation: isolate;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 20px;
@@ -95,7 +97,7 @@
 .available-order-card__actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
   margin-top: 16px;
 }
 
@@ -106,15 +108,16 @@
 
 .available-order-card__view {
   width: 100%;
-  flex: 1;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 44px;
-  border-radius: 10px;
+  height: 54px;
+  border-radius: 12px;
   border: 1px solid var(--color-border);
+  background: var(--color-bg);
   color: var(--color-text);
-  font-size: 0.85rem;
+  font-size: 0.92rem;
   font-weight: 700;
   text-decoration: none;
   transition: border-color 150ms ease;
@@ -162,4 +165,73 @@
 
 .available-order-card__reject:hover:not(:disabled) {
   background: rgba(226, 55, 63, 0.1);
+}
+
+/* An undecided order: a red light runs around the card until the driver
+   accepts or rejects it. */
+@property --pending-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.available-order-card--pending::before,
+.available-order-card--pending::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 23px;
+  pointer-events: none;
+}
+
+.available-order-card--pending::before {
+  z-index: 1;
+  padding: 3px;
+  /* Only the 3px ring is painted, never the card itself. */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  background: conic-gradient(
+    from var(--pending-angle),
+    transparent 0deg 220deg,
+    rgba(226, 55, 63, 0.25) 280deg,
+    #e2373f 345deg,
+    transparent 360deg
+  );
+  animation: pending-ring-spin 2.2s linear infinite;
+}
+
+.available-order-card--pending::after {
+  z-index: -2;
+  box-shadow: 0 0 18px rgba(226, 55, 63, 0.35);
+  animation: pending-glow 2.2s ease-in-out infinite;
+}
+
+@keyframes pending-ring-spin {
+  to {
+    --pending-angle: 360deg;
+  }
+}
+
+@keyframes pending-glow {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .available-order-card--pending::before {
+    animation: none;
+    background: #e2373f;
+  }
+
+  .available-order-card--pending::after {
+    animation: none;
+  }
 }

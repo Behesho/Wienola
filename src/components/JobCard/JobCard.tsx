@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { formatDateTime } from '../../lib/formatDate'
 import { getOrderPrice } from '../../lib/pricing'
+import { CheckIcon } from '../../pages/Dashboard/NewOrder/icons'
 import {
   formatAmount,
   formatPlace,
@@ -29,7 +30,9 @@ function JobCard({ order, actionLabel, onAction }: JobCardProps) {
   }
 
   return (
-    <div className={`job-card${order.status === 'cancelled' ? ' job-card--cancelled' : ''}`}>
+    <div
+      className={`job-card${order.status === 'cancelled' ? ' job-card--cancelled' : ''}${order.status === 'completed' ? ' job-card--completed' : ''}`}
+    >
       <div className="job-card__top">
         <span className="job-card__time">
           {formatDateTime(order.scheduled_date, order.scheduled_time, order.express)}
@@ -37,6 +40,7 @@ function JobCard({ order, actionLabel, onAction }: JobCardProps) {
         <span
           className={`job-card__status${order.status === 'cancelled' ? ' job-card__status--cancelled' : ''}`}
         >
+          {order.status === 'completed' && <CheckIcon className="job-card__status-check" />}
           {STATUS_LABELS[order.status]}
         </span>
       </div>

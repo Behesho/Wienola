@@ -113,3 +113,16 @@
   background: rgba(226, 55, 63, 0.14);
   color: var(--color-danger);
 }
+
+/* Completed: a green line on the left edge and a tick on the status badge. */
+.job-card--completed {
+  box-shadow: inset 4px 0 0 var(--color-brand);
+}
+
+.job-card__status-check {
+  width: 13px;
+  height: 13px;
+  margin-right: 4px;
+  vertical-align: -2px;
+  stroke-width: 3;
+}

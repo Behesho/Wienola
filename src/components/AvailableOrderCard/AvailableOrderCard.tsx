@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   BikeIcon,
@@ -8,6 +8,7 @@ import {
 } from '../../pages/Dashboard/NewOrder/icons'
 import { formatDateTime } from '../../lib/formatDate'
 import { getOrderPrice } from '../../lib/pricing'
+import { flyTo } from '../../lib/flyTo'
 import {
   formatAmount,
   formatPlace,
@@ -29,10 +30,18 @@ const VEHICLE_ICONS = {
 interface AvailableOrderCardProps {
   order: Order
   onAccept: (orderId: string) => Promise<boolean>
+  /** Called once the "fly to Meine Jobs" animation has finished. */
+  onAccepted: (orderId: string) => void
   onReject: (orderId: string) => Promise<void>
 }
 
-function AvailableOrderCard({ order, onAccept, onReject }: AvailableOrderCardProps) {
+function AvailableOrderCard({
+  order,
+  onAccept,
+  onAccepted,
+  onReject,
+}: AvailableOrderCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null)
   const [accepting, setAccepting] = useState(false)
   const [rejecting, setRejecting] = useState(false)
   const [failed, setFailed] = useState(false)
@@ -44,8 +53,16 @@ function AvailableOrderCard({ order, onAccept, onReject }: AvailableOrderCardPro
     setAccepting(true)
     setFailed(false)
     const success = await onAccept(order.id)
-    setAccepting(false)
-    if (!success) setFailed(true)
+    if (!success) {
+      setAccepting(false)
+      setFailed(true)
+      return
+    }
+    await flyTo(
+      cardRef.current,
+      document.querySelector('.bottom-nav a[href="/dashboard/my-jobs"]'),
+    )
+    onAccepted(order.id)
   }
 
   async function handleReject() {
@@ -55,7 +72,10 @@ function AvailableOrderCard({ order, onAccept, onReject }: AvailableOrderCardPro
   }
 
   return (
-    <div className="available-order-card">
+    <div
+      ref={cardRef}
+      className={`available-order-card${busy ? '' : ' available-order-card--pending'}`}
+    >
       <div className="available-order-card__top">
         <span className="available-order-card__type">
           {TRANSPORT_TYPE_LABELS[order.transport_type]}

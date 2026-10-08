@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../../../context/useAuth'
 import { supabase } from '../../../lib/supabase'
 import {
@@ -18,6 +18,9 @@ function DriverHomePage() {
   const { user } = useAuth()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
+  // Orders being accepted stay in the list (even if a reload no longer
+  // returns them) until their fly-away animation is done.
+  const leavingRef = useRef(new Set<string>())
 
   useEffect(() => {
     if (!user) return
@@ -39,7 +42,16 @@ function DriverHomePage() {
       const rejectedIds = new Set(
         (rejectedResult.data ?? []).map((row) => row.order_id),
       )
-      setOrders((openResult.data ?? []).filter((order) => !rejectedIds.has(order.id)))
+      const fresh = (openResult.data ?? []).filter((order) => !rejectedIds.has(order.id))
+      setOrders((prev) => {
+        const next = fresh.slice()
+        prev.forEach((order, index) => {
+          if (leavingRef.current.has(order.id) && !next.some((o) => o.id === order.id)) {
+            next.splice(Math.min(index, next.length), 0, order)
+          }
+        })
+        return next
+      })
       setLoading(false)
     }
 
@@ -73,10 +85,12 @@ function DriverHomePage() {
 
   async function handleAccept(orderId: string): Promise<boolean> {
     if (!user) return false
+    leavingRef.current.add(orderId)
     const { data, error } = await acceptOrder(orderId, user.id)
     acknowledgeNewOrders()
 
     if (error || !data) {
+      leavingRef.current.delete(orderId)
       // Someone else was faster: show the message on the card for a moment,
       // then drop it from the list.
       window.setTimeout(() => {
@@ -85,8 +99,12 @@ function DriverHomePage() {
       return false
     }
 
-    setOrders((prev) => prev.filter((order) => order.id !== orderId))
     return true
+  }
+
+  function handleAccepted(orderId: string) {
+    leavingRef.current.delete(orderId)
+    setOrders((prev) => prev.filter((order) => order.id !== orderId))
   }
 
   async function handleReject(orderId: string) {
@@ -114,6 +132,7 @@ function DriverHomePage() {
             key={order.id}
             order={order}
             onAccept={handleAccept}
+            onAccepted={handleAccepted}
             onReject={handleReject}
           />
         ))

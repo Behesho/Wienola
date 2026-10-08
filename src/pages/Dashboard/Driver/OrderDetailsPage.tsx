@@ -17,7 +17,8 @@ import {
   TruckIcon,
   VanIcon,
 } from '../NewOrder/icons'
-import { PhoneIcon } from '../../../components/icons/NavIcons'
+import { PhoneIcon, PinIcon } from '../../../components/icons/NavIcons'
+import JobProgressHero from './JobProgressHero'
 import { ChevronLeftIcon } from '../NewOrder/icons'
 import {
   formatAmount,
@@ -203,6 +204,14 @@ function OrderDetailsPage() {
     order.destination_district === 'other'
       ? order.destination_custom_location
       : order.destination_district
+  const isMyJob = order.driver_id === user?.id
+  const headingToDestination = isMyJob && order.status === 'in_transit'
+  const destinationLine = [
+    formatStreetLine(order.destination_street, order.destination_house_number),
+    destinationPlace,
+  ]
+    .filter(Boolean)
+    .join(', ')
 
   return (
     <div className="order-details-page">
@@ -210,6 +219,18 @@ function OrderDetailsPage() {
         {backButton}
         <h1 className="order-details-page__title">Auftragsdetails</h1>
       </div>
+
+      {advance && isMyJob && (
+        <JobProgressHero
+          status={order.status}
+          vehicle={order.vehicle}
+          destination={destinationLine}
+          actionLabel={advance.label}
+          busy={busy}
+          error={error}
+          onAction={handleAdvance}
+        />
+      )}
 
       {order.status === 'cancelled' && (
         <p className="order-details-page__cancelled" role="status">
@@ -266,7 +287,15 @@ function OrderDetailsPage() {
             )}
             {pickupPlace && <p>{pickupPlace}</p>}
           </div>
-          <div className="order-details-page__address">
+          <div
+            className={`order-details-page__address${headingToDestination ? ' order-details-page__address--target' : ''}`}
+          >
+            {headingToDestination && (
+              <span className="order-details-page__target-badge">
+                <PinIcon />
+                Hierhin fahren
+              </span>
+            )}
             <span className="order-details-page__address-label">Zustellung</span>
             {(order.destination_street || order.destination_house_number) && (
               <p>
@@ -393,7 +422,9 @@ function OrderDetailsPage() {
         </Section>
       )}
 
-      {error && <p className="order-details-page__error">{error}</p>}
+      {error && !(advance && isMyJob) && (
+        <p className="order-details-page__error">{error}</p>
+      )}
 
       {order.status === 'open' && (
         <div className="order-details-page__open-actions">
@@ -414,17 +445,6 @@ function OrderDetailsPage() {
             {busy ? 'Wird angenommen…' : 'Auftrag annehmen'}
           </button>
         </div>
-      )}
-
-      {advance && order.driver_id === user?.id && (
-        <button
-          type="button"
-          className="order-details-page__cta"
-          onClick={handleAdvance}
-          disabled={busy}
-        >
-          {busy ? 'Wird aktualisiert…' : advance.label}
-        </button>
       )}
 
       {order.status === 'accepted' && order.driver_id === user?.id && (

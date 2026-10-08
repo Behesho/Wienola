@@ -1,0 +1,337 @@
+.job-hero {
+  margin-bottom: 16px;
+  padding: 18px 20px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(var(--color-brand-rgb), 0.4);
+  background:
+    linear-gradient(
+      160deg,
+      rgba(var(--color-brand-rgb), 0.12),
+      rgba(var(--color-brand-rgb), 0.02)
+    ),
+    var(--color-surface);
+  text-align: center;
+  animation: job-hero-enter 320ms ease-out both;
+}
+
+.job-hero__art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 130px;
+  margin-bottom: 8px;
+}
+
+.job-hero__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.job-hero__subtitle {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.job-hero__destination {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(var(--color-brand-rgb), 0.12);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.job-hero__destination svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-brand);
+}
+
+.job-hero__error {
+  margin: 12px 0 0;
+  font-size: 0.82rem;
+  color: var(--color-danger);
+}
+
+.job-hero__action {
+  width: 100%;
+  height: 52px;
+  margin-top: 16px;
+  border-radius: 12px;
+  border: none;
+  background: var(--color-brand);
+  color: var(--color-brand-ink);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    filter 150ms ease,
+    transform 150ms ease;
+}
+
+.job-hero__action:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.job-hero__action:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.job-hero__action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* --- Handover scene ---------------------------------------------------- */
+
+.job-hero__scene {
+  width: 100%;
+  max-width: 260px;
+  height: 130px;
+}
+
+.job-hero__ground {
+  stroke: var(--color-border);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.job-hero__skin {
+  fill: #f1c7a3;
+}
+
+.job-hero__customer {
+  fill: #8a8f98;
+}
+
+.job-hero__driver {
+  fill: var(--color-brand);
+}
+
+.job-hero__driver-dark {
+  fill: #3f4a3f;
+}
+
+.job-hero__arm {
+  stroke-width: 9;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.job-hero__arm--customer {
+  stroke: #8a8f98;
+}
+
+.job-hero__arm--driver {
+  stroke: var(--color-brand);
+}
+
+.job-hero__box {
+  fill: #c8925a;
+}
+
+.job-hero__tape {
+  fill: #a87440;
+}
+
+.job-hero__package {
+  animation: job-hero-bob 1.6s ease-in-out infinite;
+}
+
+.job-hero__flow {
+  fill: none;
+  stroke: var(--color-brand);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 5 6;
+  animation: job-hero-dash 0.9s linear infinite;
+}
+
+.job-hero__flow-head {
+  fill: none;
+  stroke: var(--color-brand);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* --- Vehicle scene ----------------------------------------------------- */
+
+.job-hero__vehicle-scene {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 260px;
+  height: 130px;
+}
+
+.job-hero__vehicle {
+  width: 104px;
+  height: 104px;
+  color: var(--color-brand);
+  animation: job-hero-idle 0.35s ease-in-out infinite alternate;
+}
+
+.job-hero__speed {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-right: 6px;
+}
+
+.job-hero__speed i {
+  display: block;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--color-brand);
+  opacity: 0.6;
+  animation: job-hero-speed 0.8s ease-in-out infinite;
+}
+
+.job-hero__speed i:nth-child(1) {
+  width: 26px;
+}
+
+.job-hero__speed i:nth-child(2) {
+  width: 38px;
+  animation-delay: 0.15s;
+}
+
+.job-hero__speed i:nth-child(3) {
+  width: 20px;
+  animation-delay: 0.3s;
+}
+
+.job-hero__vehicle-scene--moving .job-hero__vehicle {
+  width: 84px;
+  height: 84px;
+}
+
+.job-hero__road {
+  width: 56px;
+  height: 0;
+  margin: 0 6px;
+  border-top: 3px dashed rgba(var(--color-brand-rgb), 0.6);
+  animation: job-hero-road 0.8s linear infinite;
+}
+
+.job-hero__pin {
+  width: 42px;
+  height: 42px;
+  color: var(--color-brand);
+  animation: job-hero-bob 1.2s ease-in-out infinite;
+}
+
+/* --- Delivered scene --------------------------------------------------- */
+
+.job-hero__delivered {
+  position: relative;
+}
+
+.job-hero__house {
+  width: 104px;
+  height: 104px;
+  color: var(--color-brand);
+}
+
+.job-hero__done-badge {
+  position: absolute;
+  right: -6px;
+  bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-brand);
+  color: var(--color-brand-ink);
+}
+
+.job-hero__done-badge svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 3;
+}
+
+/* --- Keyframes --------------------------------------------------------- */
+
+@keyframes job-hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes job-hero-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes job-hero-dash {
+  to {
+    stroke-dashoffset: -22;
+  }
+}
+
+@keyframes job-hero-idle {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-1.5px);
+  }
+}
+
+@keyframes job-hero-speed {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateX(-6px);
+    opacity: 0.8;
+  }
+}
+
+@keyframes job-hero-road {
+  from {
+    background-position: 0 0;
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .job-hero,
+  .job-hero__package,
+  .job-hero__flow,
+  .job-hero__vehicle,
+  .job-hero__speed i,
+  .job-hero__road,
+  .job-hero__pin {
+    animation: none;
+  }
+}
