@@ -11,7 +11,9 @@ import type { Order } from '../types/order'
  *  - Klosterneuburg = like district 19, Seestadt = like district 22, +7 EUR
  *    in both directions.
  *  - Same zone as pickup and delivery among KLN/SST: flat 12 EUR.
- *  - Prices exist for bike and car only.
+ *  - The table covers bike and car. Orders without a vehicle choice (e.g.
+ *    Billa Click & Collect) are priced from the same table; van and truck
+ *    orders have no table price.
  */
 
 type Zone = string
@@ -104,7 +106,7 @@ export function getOrderPrice(
     | 'destination_custom_location'
   >,
 ): number | null {
-  if (order.vehicle && PRICED_VEHICLES.has(order.vehicle)) {
+  if (!order.vehicle || PRICED_VEHICLES.has(order.vehicle)) {
     const from = orderZone(order.pickup_district, order.pickup_custom_location)
     const to = orderZone(
       order.destination_district,
