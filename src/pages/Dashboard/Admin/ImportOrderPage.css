@@ -1,0 +1,117 @@
+.import-order__title {
+  margin: 4px 0 16px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.import-order__hint {
+  margin: 0 0 14px;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.import-order__text {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.88rem;
+  resize: vertical;
+  outline: none;
+}
+
+.import-order__text:focus {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px rgba(var(--color-brand-rgb), 0.18);
+}
+
+.import-order__group {
+  margin-bottom: 22px;
+}
+
+.import-order__heading {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.import-order__check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.import-order__check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-brand);
+}
+
+.import-order__primary {
+  width: 100%;
+  height: 50px;
+  margin-top: 14px;
+  border-radius: 12px;
+  border: none;
+  background: var(--color-brand);
+  color: var(--color-brand-ink);
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 150ms ease;
+}
+
+.import-order__primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.import-order__primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.import-order__secondary {
+  display: block;
+  margin: 14px auto 0;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.import-order__error {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--color-danger);
+}
+
+.import-order__done {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(var(--color-brand-rgb), 0.5);
+  background: rgba(var(--color-brand-rgb), 0.1);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.import-order__back {
+  display: block;
+  margin-top: 26px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}

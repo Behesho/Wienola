@@ -16,6 +16,7 @@ import MyJobsPage from './pages/Dashboard/Driver/MyJobsPage'
 import CompletedPage from './pages/Dashboard/Driver/CompletedPage'
 import OrderDetailsPage from './pages/Dashboard/Driver/OrderDetailsPage'
 import AdminOrdersPage from './pages/Dashboard/Admin/AdminOrdersPage'
+import ImportOrderPage from './pages/Dashboard/Admin/ImportOrderPage'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 import PublicOnlyRoute from './components/ProtectedRoute/PublicOnlyRoute'
 import { useAuth } from './context/useAuth'
@@ -65,6 +66,7 @@ function App() {
           {/* Independent of role — gated by profile.is_admin (and by RLS
               underneath, which is the real protection). */}
           <Route path="admin" element={<AdminOrdersPage />} />
+          <Route path="admin/import" element={<ImportOrderPage />} />
         </Route>
 
         {/* Any other URL: signed-out users are bounced to /login by the

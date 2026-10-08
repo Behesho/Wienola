@@ -99,6 +99,7 @@ export function getOrderPrice(
   order: Pick<
     Order,
     | 'vehicle'
+    | 'source'
     | 'amount'
     | 'pickup_district'
     | 'pickup_custom_location'
@@ -106,6 +107,7 @@ export function getOrderPrice(
     | 'destination_custom_location'
   >,
 ): number | null {
+  if (order.source === 'abholance-mail' && order.amount !== null) return order.amount
   if (!order.vehicle || PRICED_VEHICLES.has(order.vehicle)) {
     const from = orderZone(order.pickup_district, order.pickup_custom_location)
     const to = orderZone(

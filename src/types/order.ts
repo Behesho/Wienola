@@ -49,6 +49,11 @@ export interface Order {
   scheduled_time: string | null
   express: boolean
   contact_phone: string | null
+  /** Real customer of an order an admin entered from outside the app. */
+  external_customer_name: string | null
+  external_customer_email: string | null
+  /** 'app' for normal orders, 'abholance-mail' for imported ones. */
+  source: string
   payer: Payer | null
   amount: number | null
   payment_status: PaymentStatus
@@ -150,6 +155,14 @@ export function formatStockUnit(
   return [stock && `Stock ${stock}`, unit && `Tür ${unit}`]
     .filter(Boolean)
     .join(' · ')
+}
+
+/** Name of the person the driver should deal with. */
+export function customerDisplayName(order: {
+  external_customer_name: string | null
+  customer?: { full_name: string | null } | null
+}): string {
+  return order.external_customer_name || order.customer?.full_name || 'Kund_in'
 }
 
 export function formatAmount(amount: number | null): string | null {

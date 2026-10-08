@@ -70,3 +70,8 @@
 .profile-page__admin-link:hover {
   text-decoration: underline;
 }
+
+.dashboard-section__body .profile-page__admin-link + .profile-page__admin-link {
+  display: block;
+  margin-top: 10px;
+}

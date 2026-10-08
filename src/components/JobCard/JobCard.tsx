@@ -4,6 +4,7 @@ import { formatDateTime } from '../../lib/formatDate'
 import { getOrderPrice } from '../../lib/pricing'
 import { CheckIcon } from '../../pages/Dashboard/NewOrder/icons'
 import {
+  customerDisplayName,
   formatAmount,
   formatPlace,
   PAYMENT_STATUS_LABELS,
@@ -57,7 +58,7 @@ function JobCard({ order, actionLabel, onAction }: JobCardProps) {
 
       <div className="job-card__meta">
         <span className="job-card__customer">
-          {order.customer?.full_name || 'Kund_in'}
+          {customerDisplayName(order)}
         </span>
         {amount && <span className="job-card__amount">{amount}</span>}
         <span

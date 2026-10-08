@@ -63,6 +63,9 @@ function ProfilePage() {
           <Link to="/dashboard/admin" className="profile-page__admin-link">
             Aufträge zuweisen
           </Link>
+          <Link to="/dashboard/admin/import" className="profile-page__admin-link">
+            Auftrag aus E-Mail erstellen
+          </Link>
         </DashboardSection>
       )}
 

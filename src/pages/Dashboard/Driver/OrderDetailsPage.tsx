@@ -21,6 +21,7 @@ import { PhoneIcon, PinIcon } from '../../../components/icons/NavIcons'
 import JobProgressHero from './JobProgressHero'
 import { ChevronLeftIcon } from '../NewOrder/icons'
 import {
+  customerDisplayName,
   formatAmount,
   formatStockUnit,
   formatStreetLine,
@@ -240,7 +241,7 @@ function OrderDetailsPage() {
 
       <Section title="Kunde">
         <p className="order-details-page__customer-name">
-          {order.customer?.full_name || 'Kund_in'}
+          {customerDisplayName(order)}
         </p>
         {(order.contact_phone || order.customer?.phone) && (
           <div className="order-details-page__phone-row">
@@ -254,11 +255,11 @@ function OrderDetailsPage() {
             </a>
           </div>
         )}
-        {order.customer?.email && (
+        {(order.external_customer_email || order.customer?.email) && (
           <div className="order-details-page__phone-row">
-            <span>{order.customer.email}</span>
+            <span>{order.external_customer_email || order.customer?.email}</span>
             <a
-              href={`mailto:${order.customer.email}`}
+              href={`mailto:${order.external_customer_email || order.customer?.email}`}
               className="order-details-page__call"
             >
               E-Mail

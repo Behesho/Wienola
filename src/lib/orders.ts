@@ -1,6 +1,10 @@
 import { supabase } from './supabase'
 import { getOrderPrice } from './pricing'
-import type { OrderFormData } from '../pages/Dashboard/NewOrder/types'
+import type {
+  AddressValue,
+  OrderFormData,
+  TransportType,
+} from '../pages/Dashboard/NewOrder/types'
 import type { Order, OrderStatus, OrderWithCustomer, OrderWithDriver } from '../types/order'
 
 const ACTIVE_STATUSES: OrderStatus[] = [
@@ -60,6 +64,7 @@ function toDbRow(customerId: string, data: OrderFormData) {
     // Zone price (bike/car only) — never entered by the customer.
     amount: getOrderPrice({
       vehicle: data.vehicle,
+      source: 'app',
       amount: null,
       pickup_district: data.pickup.district || null,
       pickup_custom_location: data.pickup.customLocation || null,
@@ -81,6 +86,63 @@ export async function insertOrder(
   return supabase
     .from('orders')
     .insert({ ...toDbRow(customerId, data), assigned_driver_id: assignedDriverId })
+    .select()
+    .single<Order>()
+}
+
+export interface ExternalOrderInput {
+  transportType: TransportType
+  description: string
+  name: string
+  phone: string
+  email: string
+  pickup: AddressValue
+  destination: AddressValue
+  express: boolean
+  date: string
+  time: string
+  payer: 'pickup' | 'destination' | 'cash' | 'card' | null
+  amount: string
+  assignedDriverId: string | null
+}
+
+/**
+ * An admin enters an order that reached them outside the app (e.g. the
+ * abholance-wien.at mail). It is filed under the admin's own account, with
+ * the real customer's details on the order itself.
+ */
+export async function insertExternalOrder(adminId: string, input: ExternalOrderInput) {
+  return supabase
+    .from('orders')
+    .insert({
+      customer_id: adminId,
+      status: 'open',
+      source: 'abholance-mail',
+      transport_type: input.transportType,
+      description: input.description || null,
+      vehicle: null,
+      pickup_district: input.pickup.district || null,
+      pickup_custom_location: input.pickup.customLocation || null,
+      pickup_street: input.pickup.street || null,
+      pickup_house_number: input.pickup.houseNumber || null,
+      pickup_stock: input.pickup.stock || null,
+      pickup_unit: input.pickup.unit || null,
+      destination_district: input.destination.district || null,
+      destination_custom_location: input.destination.customLocation || null,
+      destination_street: input.destination.street || null,
+      destination_house_number: input.destination.houseNumber || null,
+      destination_stock: input.destination.stock || null,
+      destination_unit: input.destination.unit || null,
+      scheduled_date: input.express ? null : input.date || null,
+      scheduled_time: input.express ? null : input.time || null,
+      express: input.express,
+      payer: input.payer,
+      amount: input.amount ? Number(input.amount) : null,
+      contact_phone: input.phone || null,
+      external_customer_name: input.name || null,
+      external_customer_email: input.email || null,
+      assigned_driver_id: input.assignedDriverId,
+    })
     .select()
     .single<Order>()
 }
