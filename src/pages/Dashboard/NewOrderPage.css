@@ -136,3 +136,16 @@
     animation-duration: 1ms;
   }
 }
+
+.new-order-page__assign {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.new-order-page__assign > span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}

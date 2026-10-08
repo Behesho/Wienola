@@ -69,10 +69,18 @@ function toDbRow(customerId: string, data: OrderFormData) {
   }
 }
 
-export async function insertOrder(customerId: string, data: OrderFormData) {
+/**
+ * `assignedDriverId` (admins only — enforced by RLS) shows the order to
+ * exactly that one driver instead of all of them.
+ */
+export async function insertOrder(
+  customerId: string,
+  data: OrderFormData,
+  assignedDriverId: string | null = null,
+) {
   return supabase
     .from('orders')
-    .insert(toDbRow(customerId, data))
+    .insert({ ...toDbRow(customerId, data), assigned_driver_id: assignedDriverId })
     .select()
     .single<Order>()
 }

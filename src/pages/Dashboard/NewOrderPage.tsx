@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../context/useAuth'
-import { insertOrder, sendInvoiceEmail, updateProfile } from '../../lib/orders'
+import {
+  fetchDrivers,
+  insertOrder,
+  sendInvoiceEmail,
+  updateProfile,
+  type DriverOption,
+} from '../../lib/orders'
 import { ChevronLeftIcon } from './NewOrder/icons'
 import TransportTypeStep from './NewOrder/TransportTypeStep'
 import PhotoStep from './NewOrder/PhotoStep'
@@ -99,6 +105,23 @@ function NewOrderPage() {
   const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  // Admins can send the order to one chosen driver instead of all of them.
+  const isAdmin = profile?.is_admin ?? false
+  const [drivers, setDrivers] = useState<DriverOption[]>([])
+  const [assignedDriverId, setAssignedDriverId] = useState('')
+
+  useEffect(() => {
+    if (!isAdmin) return
+    let active = true
+    fetchDrivers().then(({ data: list, error: listError }) => {
+      if (!active) return
+      if (listError) console.error('Failed to load drivers:', listError.message)
+      else setDrivers(list ?? [])
+    })
+    return () => {
+      active = false
+    }
+  }, [isAdmin])
 
   const advanceTimer = useRef<number | null>(null)
 
@@ -172,7 +195,7 @@ function NewOrderPage() {
       ...data,
       // A photo picked before switching to bike/car must not be sent.
       photo: steps.includes('photo') ? data.photo : null,
-    })
+    }, isAdmin && assignedDriverId ? assignedDriverId : null)
     setSubmitting(false)
 
     if (insertError) {
@@ -340,6 +363,24 @@ function NewOrderPage() {
                 ? 'Auftrag veröffentlichen'
                 : 'Weiter'}
           </button>
+
+          {isLastStep && isAdmin && (
+            <label className="new-order-page__assign">
+              <span>Nur an diesen Dienstleister senden (Admin)</span>
+              <select
+                className="select-field__control"
+                value={assignedDriverId}
+                onChange={(event) => setAssignedDriverId(event.target.value)}
+              >
+                <option value="">An alle Dienstleister</option>
+                {drivers.map((driver) => (
+                  <option key={driver.id} value={driver.id}>
+                    {driver.full_name || driver.phone || driver.id.slice(0, 8)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
       )}
     </div>
