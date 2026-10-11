@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../../../context/useAuth'
 import {
   fetchDrivers,
   insertExternalOrder,
+  readOrderImage,
   type DriverOption,
 } from '../../../lib/orders'
 import { parseOrderEmail, type ParsedOrderEmail } from '../../../lib/parseOrderEmail'
+import { imageFileToDataUrl } from '../../../lib/imageUpload'
 import { VIENNA_DISTRICTS } from '../NewOrder/districts'
 import { EMPTY_ADDRESS, type AddressValue } from '../NewOrder/types'
 import { PAYER_LABELS } from '../../../types/order'
@@ -85,6 +87,8 @@ function ImportOrderPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [created, setCreated] = useState(false)
+  const [reading, setReading] = useState(false)
+  const fileInput = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!profile?.is_admin) return
@@ -101,8 +105,8 @@ function ImportOrderPage() {
     return <Navigate to="/dashboard" replace />
   }
 
-  function handleRead() {
-    const result = parseOrderEmail(text)
+  function fillFrom(source: string) {
+    const result = parseOrderEmail(source)
     setParsed(result)
     setPickup(result.pickup)
     setDestination(result.destination)
@@ -117,6 +121,35 @@ function ImportOrderPage() {
     setNotes(result.notes)
     setError('')
     setCreated(false)
+  }
+
+  function handleRead() {
+    fillFrom(text)
+  }
+
+  async function handlePhoto(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    setError('')
+    setReading(true)
+    try {
+      const dataUrl = await imageFileToDataUrl(file)
+      const { data, error: readError } = await readOrderImage(dataUrl)
+      if (readError || !data?.text) {
+        console.error('Photo read failed:', readError?.message)
+        setError(
+          'Das Foto konnte nicht gelesen werden. Ist die Foto-Erkennung eingerichtet? Du kannst den Text auch einfügen.',
+        )
+        return
+      }
+      setText(data.text)
+      fillFrom(data.text)
+    } catch {
+      setError('Das Bild konnte nicht verarbeitet werden. Bitte versuche ein anderes.')
+    } finally {
+      setReading(false)
+    }
   }
 
   function handleReset() {
@@ -197,10 +230,31 @@ function ImportOrderPage() {
             type="button"
             className="import-order__primary"
             onClick={handleRead}
-            disabled={!text.trim()}
+            disabled={!text.trim() || reading}
           >
             Auslesen
           </button>
+
+          <div className="import-order__or">
+            <span>oder</span>
+          </div>
+
+          <input
+            ref={fileInput}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={handlePhoto}
+          />
+          <button
+            type="button"
+            className="import-order__photo"
+            onClick={() => fileInput.current?.click()}
+            disabled={reading}
+          >
+            {reading ? 'Foto wird gelesen…' : 'Foto / Screenshot hochladen'}
+          </button>
+          {error && <p className="import-order__error">{error}</p>}
         </>
       )}
 

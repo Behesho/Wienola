@@ -147,6 +147,13 @@ export async function insertExternalOrder(adminId: string, input: ExternalOrderI
     .single<Order>()
 }
 
+/** Sends an order photo to the parse-order-image Edge Function; returns labelled text. */
+export async function readOrderImage(imageDataUrl: string) {
+  return supabase.functions.invoke<{ text: string }>('parse-order-image', {
+    body: { image: imageDataUrl },
+  })
+}
+
 /** Asks the send-invoice Edge Function to e-mail the customer their Rechnung. */
 export async function sendInvoiceEmail(orderId: string) {
   return supabase.functions.invoke('send-invoice', { body: { orderId } })
