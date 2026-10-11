@@ -4,11 +4,9 @@ import { useAuth } from '../../../context/useAuth'
 import {
   fetchDrivers,
   insertExternalOrder,
-  readOrderImage,
   type DriverOption,
 } from '../../../lib/orders'
 import { parseOrderEmail, type ParsedOrderEmail } from '../../../lib/parseOrderEmail'
-import { imageFileToDataUrl } from '../../../lib/imageUpload'
 import { VIENNA_DISTRICTS } from '../NewOrder/districts'
 import { EMPTY_ADDRESS, type AddressValue } from '../NewOrder/types'
 import { PAYER_LABELS } from '../../../types/order'
@@ -134,19 +132,22 @@ function ImportOrderPage() {
     setError('')
     setReading(true)
     try {
-      const dataUrl = await imageFileToDataUrl(file)
-      const { data, error: readError } = await readOrderImage(dataUrl)
-      if (readError || !data?.text) {
-        console.error('Photo read failed:', readError?.message)
-        setError(
-          'Das Foto konnte nicht gelesen werden. Ist die Foto-Erkennung eingerichtet? Du kannst den Text auch einfügen.',
-        )
+      // Free text recognition that runs in this browser — nothing is sent
+      // to any paid service. The German language data loads on first use.
+      const { recognize } = await import('tesseract.js')
+      const { data } = await recognize(file, 'deu')
+      const recognised = data.text.trim()
+      if (!recognised) {
+        setError('Im Foto wurde kein Text erkannt. Bitte ein schärferes Bild versuchen.')
         return
       }
-      setText(data.text)
-      fillFrom(data.text)
-    } catch {
-      setError('Das Bild konnte nicht verarbeitet werden. Bitte versuche ein anderes.')
+      setText(recognised)
+      fillFrom(recognised)
+    } catch (photoError) {
+      console.error('Photo read failed:', photoError)
+      setError(
+        'Das Foto konnte nicht gelesen werden. Prüfe die Internetverbindung oder füge den Text ein.',
+      )
     } finally {
       setReading(false)
     }
@@ -252,7 +253,7 @@ function ImportOrderPage() {
             onClick={() => fileInput.current?.click()}
             disabled={reading}
           >
-            {reading ? 'Foto wird gelesen…' : 'Foto / Screenshot hochladen'}
+            {reading ? 'Foto wird gelesen… (kann kurz dauern)' : 'Foto / Screenshot hochladen'}
           </button>
           {error && <p className="import-order__error">{error}</p>}
         </>

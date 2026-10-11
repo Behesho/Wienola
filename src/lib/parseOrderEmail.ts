@@ -116,15 +116,14 @@ export function parseOrderEmail(source: string): ParsedOrderEmail {
   const values: Partial<Record<Field, string[]>> = {}
   let current: Field | null = null
   for (const line of lines) {
-    if (!line) {
-      current = null
-      continue
-    }
+    // Blank lines (text recognition adds them between lines) don't end a
+    // field; only the next label does.
+    if (!line) continue
     const hit = matchLabel(line)
     if (hit) {
       current = hit.field
       values[hit.field] = hit.rest ? [hit.rest] : []
-    } else if (current) {
+    } else if (current && values[current]!.length < 3) {
       values[current]!.push(line)
     }
   }
