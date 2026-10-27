@@ -13,6 +13,7 @@ export type PaymentStatus = 'paid' | 'unpaid'
 /** 'pickup'/'destination' are legacy values from older orders (who paid);
  *  new orders use 'cash'/'card' (how they pay). */
 export type Payer = 'pickup' | 'destination' | 'cash' | 'card'
+export type PaymentMethodValue = 'cash' | 'card'
 
 /** Row shape of public.orders, as returned by Supabase. */
 export interface Order {
@@ -55,6 +56,10 @@ export interface Order {
   /** 'app' for normal orders, 'abholance-mail' for imported ones. */
   source: string
   payer: Payer | null
+  /** Cash or card. Absent on rows saved before this column existed. */
+  payment_method?: PaymentMethodValue | null
+  /** Driver returns to the pickup address. Absent on older rows. */
+  return_trip?: boolean
   amount: number | null
   payment_status: PaymentStatus
   created_at: string
@@ -108,6 +113,11 @@ export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
 export const PAYER_LABELS: Record<Payer, string> = {
   pickup: 'Abholadresse',
   destination: 'Zustelladresse',
+  cash: 'Bar',
+  card: 'Online mit Karte',
+}
+
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethodValue, string> = {
   cash: 'Bar',
   card: 'Online mit Karte',
 }

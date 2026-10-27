@@ -60,11 +60,14 @@ function toDbRow(customerId: string, data: OrderFormData) {
     scheduled_time: data.express ? null : data.time || null,
     express: data.express,
     payer: data.payer,
+    payment_method: data.paymentMethod,
+    return_trip: data.returnTrip,
     contact_phone: data.contactPhone || null,
     // Zone price (bike/car only) — never entered by the customer.
     amount: getOrderPrice({
       vehicle: data.vehicle,
       source: 'app',
+      return_trip: data.returnTrip,
       amount: null,
       pickup_district: data.pickup.district || null,
       pickup_custom_location: data.pickup.customLocation || null,
@@ -72,6 +75,22 @@ function toDbRow(customerId: string, data: OrderFormData) {
       destination_custom_location: data.destination.customLocation || null,
     }),
   }
+}
+
+/**
+ * Columns added after the first release. If the database doesn't have them
+ * yet (SQL not run), the order is still saved — just without these details.
+ */
+const OPTIONAL_COLUMNS = ['return_trip', 'payment_method']
+
+async function insertOrderRow(row: Record<string, unknown>) {
+  const first = await supabase.from('orders').insert(row).select().single<Order>()
+  // PGRST204: a column in the payload isn't in the schema cache.
+  if (first.error?.code !== 'PGRST204') return first
+
+  const trimmed = { ...row }
+  for (const column of OPTIONAL_COLUMNS) delete trimmed[column]
+  return supabase.from('orders').insert(trimmed).select().single<Order>()
 }
 
 /**
@@ -83,11 +102,10 @@ export async function insertOrder(
   data: OrderFormData,
   assignedDriverId: string | null = null,
 ) {
-  return supabase
-    .from('orders')
-    .insert({ ...toDbRow(customerId, data), assigned_driver_id: assignedDriverId })
-    .select()
-    .single<Order>()
+  return insertOrderRow({
+    ...toDbRow(customerId, data),
+    assigned_driver_id: assignedDriverId,
+  })
 }
 
 export interface ExternalOrderInput {
@@ -101,7 +119,8 @@ export interface ExternalOrderInput {
   express: boolean
   date: string
   time: string
-  payer: 'pickup' | 'destination' | 'cash' | 'card' | null
+  payer: 'pickup' | 'destination' | null
+  paymentMethod: 'cash' | 'card' | null
   amount: string
   assignedDriverId: string | null
 }
@@ -112,9 +131,7 @@ export interface ExternalOrderInput {
  * the real customer's details on the order itself.
  */
 export async function insertExternalOrder(adminId: string, input: ExternalOrderInput) {
-  return supabase
-    .from('orders')
-    .insert({
+  return insertOrderRow({
       customer_id: adminId,
       status: 'open',
       source: 'abholance-mail',
@@ -137,14 +154,13 @@ export async function insertExternalOrder(adminId: string, input: ExternalOrderI
       scheduled_time: input.express ? null : input.time || null,
       express: input.express,
       payer: input.payer,
+      payment_method: input.paymentMethod,
       amount: input.amount ? Number(input.amount) : null,
       contact_phone: input.phone || null,
       external_customer_name: input.name || null,
       external_customer_email: input.email || null,
       assigned_driver_id: input.assignedDriverId,
     })
-    .select()
-    .single<Order>()
 }
 
 /** Asks the send-invoice Edge Function to e-mail the customer their Rechnung. */

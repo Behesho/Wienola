@@ -9,7 +9,7 @@ import {
 import { parseOrderEmail, type ParsedOrderEmail } from '../../../lib/parseOrderEmail'
 import { VIENNA_DISTRICTS } from '../NewOrder/districts'
 import { EMPTY_ADDRESS, type AddressValue } from '../NewOrder/types'
-import { PAYER_LABELS } from '../../../types/order'
+import { PAYER_LABELS, PAYMENT_METHOD_LABELS } from '../../../types/order'
 import '../NewOrder/RouteStep.css'
 import './ImportOrderPage.css'
 
@@ -63,7 +63,8 @@ function AddressFields({
   )
 }
 
-type PayerValue = '' | 'pickup' | 'destination' | 'cash' | 'card'
+type PayerValue = '' | 'pickup' | 'destination'
+type MethodValue = '' | 'cash' | 'card'
 
 function ImportOrderPage() {
   const { user, profile } = useAuth()
@@ -76,6 +77,7 @@ function ImportOrderPage() {
   const [email, setEmail] = useState('')
   const [amount, setAmount] = useState('')
   const [payer, setPayer] = useState<PayerValue>('')
+  const [method, setMethod] = useState<MethodValue>('')
   const [express, setExpress] = useState(true)
   const [date, setDate] = useState('')
   const [time, setTime] = useState('')
@@ -189,6 +191,7 @@ function ImportOrderPage() {
       date,
       time,
       payer: payer || null,
+      paymentMethod: method || null,
       amount,
       assignedDriverId: driverId || null,
     })
@@ -317,16 +320,31 @@ function ImportOrderPage() {
               />
             </label>
             <label className="route-step__field">
-              <span>Zahlungsart / Zahler</span>
+              <span>Wer bezahlt?</span>
               <select
                 className="select-field__control"
                 value={payer}
                 onChange={(e) => setPayer(e.target.value as PayerValue)}
               >
                 <option value="">Keine Angabe</option>
-                {(['pickup', 'destination', 'cash', 'card'] as const).map((key) => (
+                {(['pickup', 'destination'] as const).map((key) => (
                   <option key={key} value={key}>
                     {PAYER_LABELS[key]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="route-step__field">
+              <span>Zahlungsart</span>
+              <select
+                className="select-field__control"
+                value={method}
+                onChange={(e) => setMethod(e.target.value as MethodValue)}
+              >
+                <option value="">Keine Angabe</option>
+                {(['cash', 'card'] as const).map((key) => (
+                  <option key={key} value={key}>
+                    {PAYMENT_METHOD_LABELS[key]}
                   </option>
                 ))}
               </select>

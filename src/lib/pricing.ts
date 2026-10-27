@@ -100,6 +100,7 @@ export function getOrderPrice(
     Order,
     | 'vehicle'
     | 'source'
+    | 'return_trip'
     | 'amount'
     | 'pickup_district'
     | 'pickup_custom_location'
@@ -116,7 +117,14 @@ export function getOrderPrice(
     )
     if (from && to) {
       const price = legPrice(from, to)
-      if (price !== null) return price
+      if (price !== null) {
+        if (order.return_trip) {
+          // Rückweg: the way back to the pickup costs half.
+          const back = from === to ? 6 : legPrice(to, from)
+          if (back !== null) return price + Math.round((back / 2) * 100) / 100
+        }
+        return price
+      }
     }
   }
   return order.amount

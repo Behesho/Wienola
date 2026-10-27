@@ -1,4 +1,5 @@
 import type { VehicleType } from './types'
+import { HIDDEN_VEHICLES } from '../../../config/orderFlags'
 import { BikeIcon, CarIcon, TruckIcon, VanIcon } from './icons'
 import './VehicleStep.css'
 
@@ -22,7 +23,7 @@ function VehicleStep({ vehicle, onChange }: VehicleStepProps) {
       </h2>
 
       <div className="vehicle-step__grid">
-        {VEHICLES.map(({ type, label, icon: Icon }) => (
+        {VEHICLES.filter(({ type }) => !HIDDEN_VEHICLES.includes(type)).map(({ type, label, icon: Icon }) => (
           <button
             key={type}
             type="button"

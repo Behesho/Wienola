@@ -1,8 +1,13 @@
 import { BoltIcon, CalendarIcon, ClockIcon } from './icons'
-import type { PayerChoice } from './types'
+import type { PayerChoice, PaymentMethod } from './types'
 import './ScheduleStep.css'
 
 const PAYER_OPTIONS: { value: PayerChoice; label: string }[] = [
+  { value: 'pickup', label: 'Abholadresse' },
+  { value: 'destination', label: 'Zustelladresse' },
+]
+
+const METHOD_OPTIONS: { value: PaymentMethod; label: string }[] = [
   { value: 'cash', label: 'Bar' },
   { value: 'card', label: 'Online mit Karte' },
 ]
@@ -12,11 +17,13 @@ interface ScheduleStepProps {
   time: string
   express: boolean
   payer: PayerChoice | null
+  paymentMethod: PaymentMethod | null
   onChange: (patch: {
     date?: string
     time?: string
     express?: boolean
     payer?: PayerChoice
+    paymentMethod?: PaymentMethod
   }) => void
 }
 
@@ -25,6 +32,7 @@ function ScheduleStep({
   time,
   express,
   payer,
+  paymentMethod,
   onChange,
 }: ScheduleStepProps) {
   return (
@@ -81,7 +89,7 @@ function ScheduleStep({
       </button>
 
       <div className="schedule-step__payer">
-        <span className="schedule-step__payer-title">Zahlungsart</span>
+        <span className="schedule-step__payer-title">Wer bezahlt?</span>
         <div className="schedule-step__payer-options">
           {PAYER_OPTIONS.map((option) => (
             <button
@@ -90,6 +98,23 @@ function ScheduleStep({
               className={`schedule-step__payer-option${payer === option.value ? ' schedule-step__payer-option--selected' : ''}`}
               aria-pressed={payer === option.value}
               onClick={() => onChange({ payer: option.value })}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="schedule-step__payer">
+        <span className="schedule-step__payer-title">Zahlungsart</span>
+        <div className="schedule-step__payer-options">
+          {METHOD_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              className={`schedule-step__payer-option${paymentMethod === option.value ? ' schedule-step__payer-option--selected' : ''}`}
+              aria-pressed={paymentMethod === option.value}
+              onClick={() => onChange({ paymentMethod: option.value })}
             >
               {option.label}
             </button>

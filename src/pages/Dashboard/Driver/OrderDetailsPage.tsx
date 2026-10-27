@@ -26,6 +26,7 @@ import {
   formatStockUnit,
   formatStreetLine,
   PAYER_LABELS,
+  PAYMENT_METHOD_LABELS,
   PAYMENT_STATUS_LABELS,
   STATUS_ADVANCE,
   STATUS_LABELS,
@@ -205,6 +206,13 @@ function OrderDetailsPage() {
     order.destination_district === 'other'
       ? order.destination_custom_location
       : order.destination_district
+  // New orders keep "who pays" (pickup/destination) and "how" (cash/card)
+  // apart; older ones stored either in the single payer column.
+  const whoPays =
+    order.payer === 'pickup' || order.payer === 'destination' ? order.payer : null
+  const payMethod =
+    order.payment_method ??
+    (order.payer === 'cash' || order.payer === 'card' ? order.payer : null)
   const isMyJob = order.driver_id === user?.id
   const headingToDestination = isMyJob && order.status === 'in_transit'
   const destinationLine = [
@@ -318,10 +326,22 @@ function OrderDetailsPage() {
 
       <Section title="Zahlung">
         <dl className="order-details-page__payment">
-          {order.payer && (
+          {whoPays && (
+            <>
+              <dt>Wer bezahlt?</dt>
+              <dd>{PAYER_LABELS[whoPays]}</dd>
+            </>
+          )}
+          {payMethod && (
             <>
               <dt>Zahlungsart</dt>
-              <dd>{PAYER_LABELS[order.payer]}</dd>
+              <dd>{PAYMENT_METHOD_LABELS[payMethod]}</dd>
+            </>
+          )}
+          {order.return_trip && (
+            <>
+              <dt>Rückweg</dt>
+              <dd>Ja – zurück zur Abholadresse</dd>
             </>
           )}
           {amount && (

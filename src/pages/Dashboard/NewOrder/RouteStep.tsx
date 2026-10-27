@@ -17,6 +17,7 @@ interface RouteStepProps {
   guestName?: string
   guestEmail?: string
   contactPhone?: string
+  returnTrip?: boolean
   onChange: (patch: {
     pickup?: AddressValue
     destination?: AddressValue
@@ -24,6 +25,7 @@ interface RouteStepProps {
     guestName?: string
     guestEmail?: string
     contactPhone?: string
+    returnTrip?: boolean
   }) => void
 }
 
@@ -38,6 +40,7 @@ function RouteStep({
   guestName = '',
   guestEmail = '',
   contactPhone = '',
+  returnTrip = false,
   onChange,
 }: RouteStepProps) {
   return (
@@ -94,6 +97,31 @@ function RouteStep({
         value={destination}
         onChange={(value) => onChange({ destination: value })}
       />
+
+      <div className="route-step__return">
+        <span className="route-step__return-title">Gibt es einen Rückweg?</span>
+        <span className="route-step__return-hint">
+          Der Fahrer fährt nach der Zustellung zurück zur Abholadresse.
+        </span>
+        <div className="route-step__return-options">
+          <button
+            type="button"
+            className={`route-step__return-option${!returnTrip ? ' route-step__return-option--selected' : ''}`}
+            aria-pressed={!returnTrip}
+            onClick={() => onChange({ returnTrip: false })}
+          >
+            Nein
+          </button>
+          <button
+            type="button"
+            className={`route-step__return-option${returnTrip ? ' route-step__return-option--selected' : ''}`}
+            aria-pressed={returnTrip}
+            onClick={() => onChange({ returnTrip: true })}
+          >
+            Ja
+          </button>
+        </div>
+      </div>
 
       {showSlip && (
         <SlipUpload

@@ -83,6 +83,8 @@ interface OrderRow {
   scheduled_time: string | null
   express: boolean
   payer: string | null
+  payment_method?: string | null
+  return_trip?: boolean
   amount: number | null
 }
 
@@ -160,7 +162,13 @@ function buildInvoiceHtml({ order, customerName, customerPhone, logoUrl }: Invoi
     `Auftragsart: ${TRANSPORT_TYPE[order.transport_type] ?? order.transport_type}`,
     order.vehicle ? `Fahrzeug: ${VEHICLE[order.vehicle] ?? order.vehicle}` : '',
     `Termin: ${scheduleText(order)}`,
-    order.payer ? `Zahlungsart: ${PAYER[order.payer] ?? order.payer}` : '',
+    order.payer === 'pickup' || order.payer === 'destination'
+      ? `Wer bezahlt: ${PAYER[order.payer]}`
+      : '',
+    order.payment_method || order.payer === 'cash' || order.payer === 'card'
+      ? `Zahlungsart: ${PAYER[order.payment_method ?? order.payer ?? ''] ?? ''}`
+      : '',
+    order.return_trip ? 'Rückweg: Ja' : '',
   ].filter(Boolean)
 
   let priceCells: string

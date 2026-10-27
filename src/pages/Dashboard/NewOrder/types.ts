@@ -1,3 +1,5 @@
+import { SIMPLE_ORDER_FLOW } from '../../../config/orderFlags'
+
 export type VehicleType = 'bike' | 'car' | 'van' | 'truck'
 
 export type TransportType =
@@ -34,7 +36,11 @@ export const EMPTY_ADDRESS: AddressValue = {
   unit: '',
 }
 
-export type PayerChoice = 'cash' | 'card'
+/** Who pays: the sender (pickup address) or the recipient (delivery address). */
+export type PayerChoice = 'pickup' | 'destination'
+
+/** How they pay. */
+export type PaymentMethod = 'cash' | 'card'
 
 export interface OrderFormData {
   transportType: TransportType | null
@@ -52,6 +58,9 @@ export interface OrderFormData {
   time: string
   express: boolean
   payer: PayerChoice | null
+  paymentMethod: PaymentMethod | null
+  /** Driver goes back to the pickup address after delivering. */
+  returnTrip: boolean
   pickupFloor: string
   pickupElevator: ElevatorAnswer
   destinationFloor: string
@@ -77,6 +86,8 @@ export const INITIAL_ORDER_DATA: OrderFormData = {
   time: '',
   express: false,
   payer: null,
+  paymentMethod: null,
+  returnTrip: false,
   pickupFloor: '',
   pickupElevator: null,
   destinationFloor: '',
@@ -117,6 +128,15 @@ export function getStepSequence(
   type: TransportType | null,
   vehicle: VehicleType | null = null,
 ): StepKey[] {
+  if (type === 'billa') {
+    // A click & collect pickup needs no free-text description or vehicle
+    // choice.
+    return ['type', 'route', 'schedule']
+  }
+  if (SIMPLE_ORDER_FLOW && type !== null) {
+    // Every other type: what to send → vehicle → route → schedule.
+    return ['type', 'details', 'vehicle', 'route', 'schedule']
+  }
   if (type === 'moving') {
     return ['type', 'moving', 'vehicle', 'route', 'schedule']
   }
@@ -133,11 +153,6 @@ export function getStepSequence(
       'route',
       'schedule',
     ]
-  }
-  if (type === 'billa') {
-    // A click & collect pickup needs no free-text description or vehicle
-    // choice.
-    return ['type', 'route', 'schedule']
   }
   if (type === null) {
     return ['type']

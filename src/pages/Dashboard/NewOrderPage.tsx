@@ -72,7 +72,8 @@ function validateStep(
       if (!data.express && !(data.date && data.time)) {
         return 'Bitte wähle einen Termin oder „So schnell wie möglich“.'
       }
-      return data.payer ? null : 'Bitte wähle eine Zahlungsart.'
+      if (!data.payer) return 'Bitte gib an, wer bezahlt.'
+      return data.paymentMethod ? null : 'Bitte wähle eine Zahlungsart.'
     default:
       return null
   }
@@ -291,6 +292,7 @@ function NewOrderPage() {
             guestName={data.guestName}
             guestEmail={data.guestEmail}
             contactPhone={data.contactPhone}
+            returnTrip={data.returnTrip}
             onChange={update}
           />
         )
@@ -301,6 +303,7 @@ function NewOrderPage() {
             time={data.time}
             express={data.express}
             payer={data.payer}
+            paymentMethod={data.paymentMethod}
             onChange={update}
           />
         )

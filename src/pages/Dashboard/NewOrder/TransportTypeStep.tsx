@@ -1,4 +1,5 @@
 import type { TransportType } from './types'
+import { HIDDEN_TRANSPORT_TYPES } from '../../../config/orderFlags'
 import {
   CourierIcon,
   EnvelopeIcon,
@@ -81,7 +82,7 @@ function TransportTypeStep({
       <h2 className="order-step__heading">Was möchtest du versenden?</h2>
 
       <div className="transport-type-step__grid">
-        {TRANSPORT_TYPES.map(({ type, title, subtitle, icon: Icon }) => (
+        {TRANSPORT_TYPES.filter(({ type }) => !HIDDEN_TRANSPORT_TYPES.includes(type)).map(({ type, title, subtitle, icon: Icon }) => (
           <button
             key={type}
             type="button"
