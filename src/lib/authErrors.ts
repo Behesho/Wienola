@@ -32,6 +32,9 @@ export function mapSignInError(message: string): string {
   if (lower.includes('email not confirmed')) {
     return 'Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse.'
   }
+  if (lower.includes('banned')) {
+    return 'Dieses Konto wurde gesperrt. Bitte wende dich an den Admin.'
+  }
   if (lower.includes('rate limit')) {
     return 'Zu viele Versuche. Bitte versuchen Sie es in einigen Minuten erneut.'
   }

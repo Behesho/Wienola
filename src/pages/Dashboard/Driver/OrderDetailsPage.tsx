@@ -6,6 +6,7 @@ import {
   advanceOrderStatus,
   cancelOrder,
   fetchOrderById,
+  giveBackOrder,
   rejectOrder,
 } from '../../../lib/orders'
 import { acknowledgeNewOrders } from '../../../lib/orderNotifications'
@@ -19,6 +20,7 @@ import {
 } from '../NewOrder/icons'
 import { PhoneIcon, PinIcon } from '../../../components/icons/NavIcons'
 import JobProgressHero from './JobProgressHero'
+import AdminOrderBlock from '../Admin/AdminOrderBlock'
 import { navigationUrl } from '../../../lib/navigation'
 import { ChevronLeftIcon } from '../NewOrder/icons'
 import {
@@ -57,13 +59,16 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 
 function OrderDetailsPage() {
   const { orderId } = useParams<{ orderId: string }>()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
+  const isAdmin = profile?.is_admin ?? false
   const navigate = useNavigate()
   const location = useLocation()
   const [order, setOrder] = useState<OrderWithCustomer | null>(null)
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Bumped after an admin action so the order is loaded again.
+  const [reloadKey, setReloadKey] = useState(0)
 
   useEffect(() => {
     if (!orderId) return
@@ -85,7 +90,7 @@ function OrderDetailsPage() {
     return () => {
       active = false
     }
-  }, [orderId])
+  }, [orderId, reloadKey])
 
   async function handleAccept() {
     if (!user || !order) return
@@ -145,6 +150,22 @@ function OrderDetailsPage() {
       return
     }
     setOrder({ ...order, ...data })
+  }
+
+  async function handleGiveBack() {
+    if (!user || !order) return
+    if (!window.confirm('Auftrag zurückgeben? Er wird wieder für alle Fahrer frei.')) return
+
+    setBusy(true)
+    setError(null)
+    const { data, error: giveBackError } = await giveBackOrder(order.id, user.id)
+    setBusy(false)
+
+    if (giveBackError || !data || data.length === 0) {
+      setError('Auftrag konnte nicht zurückgegeben werden. Bitte versuche es erneut.')
+      return
+    }
+    navigate('/dashboard/my-jobs')
   }
 
   async function handleCancel() {
@@ -238,6 +259,14 @@ function OrderDetailsPage() {
         {backButton}
         <h1 className="order-details-page__title">Auftragsdetails</h1>
       </div>
+
+      {isAdmin && (
+        <AdminOrderBlock
+          order={order}
+          onChanged={() => setReloadKey((key) => key + 1)}
+          onDeleted={() => navigate('/dashboard/orders', { replace: true })}
+        />
+      )}
 
       {advance && isMyJob && (
         <JobProgressHero
@@ -485,7 +514,7 @@ function OrderDetailsPage() {
         <p className="order-details-page__error">{error}</p>
       )}
 
-      {order.status === 'open' && (
+      {order.status === 'open' && !isAdmin && (
         <div className="order-details-page__open-actions">
           <button
             type="button"
@@ -506,15 +535,25 @@ function OrderDetailsPage() {
         </div>
       )}
 
-      {order.status === 'accepted' && order.driver_id === user?.id && (
-        <button
-          type="button"
-          className="order-details-page__cancel"
-          onClick={handleCancel}
-          disabled={busy}
-        >
-          Auftrag stornieren
-        </button>
+      {order.status === 'accepted' && order.driver_id === user?.id && !isAdmin && (
+        <>
+          <button
+            type="button"
+            className="order-details-page__cancel"
+            onClick={handleGiveBack}
+            disabled={busy}
+          >
+            Auftrag zurückgeben
+          </button>
+          <button
+            type="button"
+            className="order-details-page__cancel"
+            onClick={handleCancel}
+            disabled={busy}
+          >
+            Auftrag stornieren
+          </button>
+        </>
       )}
     </div>
   )

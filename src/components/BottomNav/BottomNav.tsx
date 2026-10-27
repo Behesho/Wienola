@@ -9,8 +9,13 @@ import {
   HomeIcon,
   PersonIcon,
   PlusIcon,
+  UsersIcon,
 } from '../icons/NavIcons'
 import { useAuth } from '../../context/useAuth'
+import { usePoll } from '../../hooks/usePoll'
+import { fetchOrderIdsRejectedBy } from '../../lib/admin'
+import { fetchOpenOrderIds } from '../../lib/orders'
+import { CalendarIcon, ShieldIcon } from '../../pages/Dashboard/NewOrder/icons'
 import { useNotifications } from '../../context/useNotifications'
 import './BottomNav.css'
 
@@ -40,6 +45,15 @@ const DRIVER_ITEMS: NavItemConfig[] = [
   { path: '/dashboard', end: true, label: 'Home', icon: HomeIcon },
   { path: '/dashboard/my-jobs', label: 'Meine Jobs', icon: BriefcaseIcon },
   { path: '/dashboard/completed', label: 'Erledigt', icon: CheckCircleIcon },
+  { path: '/dashboard/calendar', label: 'Kalender', icon: CalendarIcon },
+  { path: '/dashboard/profile', label: 'Profil', icon: PersonIcon },
+]
+
+const ADMIN_ITEMS: NavItemConfig[] = [
+  { path: '/dashboard', end: true, label: 'Home', icon: HomeIcon },
+  { path: '/dashboard/admin', label: 'Admin', icon: ShieldIcon },
+  { path: '/dashboard/orders', label: 'Aufträge', icon: ClipboardIcon },
+  { path: '/dashboard/drivers', label: 'Fahrer', icon: UsersIcon },
   { path: '/dashboard/profile', label: 'Profil', icon: PersonIcon },
 ]
 
@@ -57,20 +71,13 @@ function isPathActive(item: NavItemConfig, pathname: string) {
     : pathname === item.path || pathname.startsWith(`${item.path}/`)
 }
 
-function NavIcon({
-  item,
-  unreadCount,
-}: {
-  item: NavItemConfig
-  unreadCount: number
-}) {
-  const showBadge = item.path === '/dashboard/notifications' && unreadCount > 0
+function NavIcon({ item, badge }: { item: NavItemConfig; badge: number }) {
   return (
     <span className="bottom-nav__icon-wrap">
       <item.icon className="bottom-nav__icon" />
-      {showBadge && (
-        <span className="bottom-nav__badge" aria-label={`${unreadCount} ungelesen`}>
-          {unreadCount > 9 ? '9+' : unreadCount}
+      {badge > 0 && (
+        <span className="bottom-nav__badge" aria-label={`${badge} neu`}>
+          {badge > 9 ? '9+' : badge}
         </span>
       )}
     </span>
@@ -78,8 +85,26 @@ function NavIcon({
 }
 
 function BottomNav() {
-  const { role } = useAuth()
+  const { role, profile, user } = useAuth()
   const { unreadCount } = useNotifications()
+  const isAdmin = profile?.is_admin ?? false
+
+  // Admin: number of new free orders on the "Aufträge" tab.
+  const adminId = user?.id ?? ''
+  const newOrders = usePoll(async () => {
+    if (!isAdmin) return 0
+    const [open, rejected] = await Promise.all([
+      fetchOpenOrderIds(),
+      fetchOrderIdsRejectedBy(adminId),
+    ])
+    const skip = new Set(rejected)
+    return (open.data ?? []).filter((row) => !skip.has(row.id)).length
+  })
+  const badgeFor = (item: NavItemConfig) => {
+    if (item.path === '/dashboard/notifications') return unreadCount
+    if (isAdmin && item.path === '/dashboard/orders') return newOrders.data ?? 0
+    return 0
+  }
   const location = useLocation()
   const barRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<(HTMLAnchorElement | null)[]>([])
@@ -88,8 +113,12 @@ function BottomNav() {
   // The driver and customer configs always have exactly 4 regular items —
   // only the FAB's presence and the items' content differ — so the same
   // four stable ref callbacks work for either role.
-  const items = role === 'dienstleister' ? DRIVER_ITEMS : CUSTOMER_ITEMS
-  const showFab = role !== 'dienstleister'
+  const items = isAdmin
+    ? ADMIN_ITEMS
+    : role === 'dienstleister'
+      ? DRIVER_ITEMS
+      : CUSTOMER_ITEMS
+  const showFab = !isAdmin && role !== 'dienstleister'
 
   const activeIndex = items.findIndex((item) => isPathActive(item, location.pathname))
 
@@ -97,7 +126,7 @@ function BottomNav() {
   activeIndexRef.current = activeIndex
 
   const itemRefCallbacks = useRef(
-    Array.from({ length: 4 }, (_, index) => (el: HTMLAnchorElement | null) => {
+    Array.from({ length: 5 }, (_, index) => (el: HTMLAnchorElement | null) => {
       itemRefs.current[index] = el
     }),
   ).current
@@ -153,7 +182,7 @@ function BottomNav() {
               `bottom-nav__item${isPathActive(item, location.pathname) ? ' bottom-nav__item--active' : ''}`
             }
           >
-            <NavIcon item={item} unreadCount={unreadCount} />
+            <NavIcon item={item} badge={badgeFor(item)} />
             <span className="bottom-nav__label">{item.label}</span>
           </NavLink>
         ))}
@@ -179,7 +208,7 @@ function BottomNav() {
                 `bottom-nav__item${isPathActive(item, location.pathname) ? ' bottom-nav__item--active' : ''}`
               }
             >
-              <NavIcon item={item} unreadCount={unreadCount} />
+              <NavIcon item={item} badge={badgeFor(item)} />
               <span className="bottom-nav__label">{item.label}</span>
             </NavLink>
           ))}

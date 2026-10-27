@@ -15,14 +15,20 @@ import DriverHomePage from './pages/Dashboard/Driver/DriverHomePage'
 import MyJobsPage from './pages/Dashboard/Driver/MyJobsPage'
 import CompletedPage from './pages/Dashboard/Driver/CompletedPage'
 import OrderDetailsPage from './pages/Dashboard/Driver/OrderDetailsPage'
-import AdminOrdersPage from './pages/Dashboard/Admin/AdminOrdersPage'
+import AdminHomePage from './pages/Dashboard/Admin/AdminHomePage'
+import AdminManagePage from './pages/Dashboard/Admin/AdminManagePage'
+import AdminOrdersListPage from './pages/Dashboard/Admin/AdminOrdersListPage'
+import AdminDriversPage from './pages/Dashboard/Admin/AdminDriversPage'
+import DriverCalendarPage from './pages/Dashboard/Driver/DriverCalendarPage'
+import PendingApprovalPage from './pages/Dashboard/Driver/PendingApprovalPage'
 import ImportOrderPage from './pages/Dashboard/Admin/ImportOrderPage'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
 import PublicOnlyRoute from './components/ProtectedRoute/PublicOnlyRoute'
 import { useAuth } from './context/useAuth'
 
 function App() {
-  const { role } = useAuth()
+  const { role, profile } = useAuth()
+  const isAdmin = profile?.is_admin ?? false
 
   return (
     <Routes>
@@ -42,9 +48,30 @@ function App() {
         <Route path="/" element={<SplashScreen />} />
 
         <Route path="/dashboard" element={<DashboardLayout />}>
-          {role === 'dienstleister' ? (
+          {isAdmin ? (
+            <>
+              <Route index element={<AdminHomePage />} />
+              <Route path="admin" element={<AdminManagePage />} />
+              <Route path="admin/import" element={<ImportOrderPage />} />
+              <Route path="orders" element={<AdminOrdersListPage />} />
+              <Route path="drivers" element={<AdminDriversPage />} />
+              <Route path="jobs/:orderId" element={<OrderDetailsPage />} />
+              <Route path="new-order" element={<NewOrderPage />} />
+              <Route path="prices" element={<PricesPage />} />
+              <Route path="notifications" element={<NotificationsPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </>
+          ) : role === 'dienstleister' && profile?.is_approved === false ? (
+            <>
+              <Route index element={<PendingApprovalPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </>
+          ) : role === 'dienstleister' ? (
             <>
               <Route index element={<DriverHomePage />} />
+              <Route path="calendar" element={<DriverCalendarPage />} />
               <Route path="my-jobs" element={<MyJobsPage />} />
               <Route path="completed" element={<CompletedPage />} />
               <Route path="jobs/:orderId" element={<OrderDetailsPage />} />
@@ -62,11 +89,6 @@ function App() {
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </>
           )}
-
-          {/* Independent of role — gated by profile.is_admin (and by RLS
-              underneath, which is the real protection). */}
-          <Route path="admin" element={<AdminOrdersPage />} />
-          <Route path="admin/import" element={<ImportOrderPage />} />
         </Route>
 
         {/* Any other URL: signed-out users are bounced to /login by the

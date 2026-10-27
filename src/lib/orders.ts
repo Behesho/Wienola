@@ -214,6 +214,17 @@ export async function fetchRejectedOrderIds(driverId: string) {
     .returns<{ order_id: string }[]>()
 }
 
+/** A driver hands an accepted (not yet picked up) job back — it is free again. */
+export async function giveBackOrder(orderId: string, driverId: string) {
+  return supabase
+    .from('orders')
+    .update({ driver_id: null, status: 'open', accepted_at: null })
+    .eq('id', orderId)
+    .eq('driver_id', driverId)
+    .eq('status', 'accepted')
+    .select('id')
+}
+
 /** Declines an open order — hides it from this driver only, others still see it. */
 export async function rejectOrder(orderId: string, driverId: string) {
   return supabase

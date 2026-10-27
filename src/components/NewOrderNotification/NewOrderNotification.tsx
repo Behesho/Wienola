@@ -12,7 +12,9 @@ import './NewOrderNotification.css'
 const POLL_INTERVAL_MS = 15000
 
 function NewOrderNotification() {
-  const { role } = useAuth()
+  const { role, profile } = useAuth()
+  // Drivers and admins are told about new open orders.
+  const notifies = role === 'dienstleister' || (profile?.is_admin ?? false)
   const navigate = useNavigate()
   const [pendingCount, setPendingCount] = useState(0)
   // null until the first check has run — that first batch of open orders is
@@ -42,7 +44,7 @@ function NewOrderNotification() {
   }, [])
 
   useEffect(() => {
-    if (role !== 'dienstleister') return
+    if (!notifies) return
     if (!getNotificationsEnabled()) return
 
     const removeAudioUnlock = installAudioUnlock()
@@ -79,9 +81,9 @@ function NewOrderNotification() {
       window.clearInterval(pollTimer)
       document.removeEventListener('visibilitychange', handleVisibility)
     }
-  }, [role, checkForNewOrders])
+  }, [notifies, checkForNewOrders])
 
-  if (role !== 'dienstleister' || pendingCount === 0) return null
+  if (!notifies || pendingCount === 0) return null
 
   function handleView() {
     acknowledgeNewOrders()

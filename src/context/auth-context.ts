@@ -9,6 +9,8 @@ export interface Profile {
   phone: string | null
   email: string | null
   is_admin: boolean
+  /** New drivers wait for the admin; absent until the admin SQL ran. */
+  is_approved?: boolean
   role: UserRole
   created_at: string
   updated_at: string

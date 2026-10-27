@@ -1,0 +1,70 @@
+.nudge-alert {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.82);
+  animation: nudge-flash 1.2s ease-in-out infinite alternate;
+}
+
+.nudge-alert__card {
+  width: 100%;
+  max-width: 360px;
+  padding: 28px 22px 22px;
+  border-radius: 24px;
+  border: 2px solid var(--color-brand);
+  background: var(--color-surface);
+  text-align: center;
+  box-shadow: 0 0 40px rgba(var(--color-brand-rgb), 0.3);
+}
+
+.nudge-alert__icon {
+  width: 44px;
+  height: 44px;
+  color: var(--color-brand);
+}
+
+.nudge-alert__title {
+  margin: 10px 0 6px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.nudge-alert__message {
+  margin: 0 0 22px;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+.nudge-alert__ok {
+  width: 100%;
+  min-height: 54px;
+  border: none;
+  border-radius: 14px;
+  background: var(--color-brand);
+  color: var(--color-brand-ink);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@keyframes nudge-flash {
+  from {
+    background: rgba(0, 0, 0, 0.82);
+  }
+  to {
+    background: rgba(40, 0, 0, 0.88);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nudge-alert {
+    animation: none;
+  }
+}
