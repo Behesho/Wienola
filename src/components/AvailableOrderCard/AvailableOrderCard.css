@@ -235,3 +235,23 @@
     animation: none;
   }
 }
+
+.available-order-card--clickable {
+  cursor: pointer;
+}
+
+.available-order-card__method {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(var(--color-brand-rgb), 0.12);
+  color: var(--color-brand);
+}
+
+.available-order-card__customer {
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}

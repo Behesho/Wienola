@@ -195,6 +195,16 @@ export async function fetchOpenOrderIds() {
   return supabase.from('orders').select('id').eq('status', 'open').returns<{ id: string }[]>()
 }
 
+/**
+ * Completes jobs whose pickup was confirmed more than 2 hours ago and that the
+ * driver forgot to close. A scheduled database job does this too; calling it
+ * when the driver opens the app is a safety net. Errors are ignored (the
+ * function doesn't exist until the SQL has been run).
+ */
+export async function autoCompleteStaleOrders() {
+  await supabase.rpc('auto_complete_stale_orders')
+}
+
 /** Ids of orders this driver has already declined — filtered out of their list. */
 export async function fetchRejectedOrderIds(driverId: string) {
   return supabase

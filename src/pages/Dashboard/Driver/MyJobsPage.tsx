@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useAuth } from '../../../context/useAuth'
-import { advanceOrderStatus, fetchMyJobs } from '../../../lib/orders'
+import {
+  advanceOrderStatus,
+  autoCompleteStaleOrders,
+  fetchMyJobs,
+} from '../../../lib/orders'
 import TodayBilanz from '../../../components/BilanzCard/TodayBilanz'
 import JobCard from '../../../components/JobCard/JobCard'
 import { STATUS_ADVANCE, type OrderWithCustomer } from '../../../types/order'
@@ -24,7 +28,8 @@ function MyJobsPage() {
   }, [user])
 
   useEffect(() => {
-    reload()
+    // Jobs left open for 2h after pickup are closed first, then the list loads.
+    autoCompleteStaleOrders().then(reload, reload)
   }, [reload])
 
   async function handleAdvance(order: OrderWithCustomer) {

@@ -126,3 +126,16 @@
   vertical-align: -2px;
   stroke-width: 3;
 }
+
+.job-card--clickable {
+  cursor: pointer;
+}
+
+.job-card__method {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(var(--color-brand-rgb), 0.12);
+  color: var(--color-brand);
+}

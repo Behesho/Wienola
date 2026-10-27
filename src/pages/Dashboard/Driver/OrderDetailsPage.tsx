@@ -19,11 +19,14 @@ import {
 } from '../NewOrder/icons'
 import { PhoneIcon, PinIcon } from '../../../components/icons/NavIcons'
 import JobProgressHero from './JobProgressHero'
+import { navigationUrl } from '../../../lib/navigation'
 import { ChevronLeftIcon } from '../NewOrder/icons'
 import {
+  customerCode,
   customerDisplayName,
   formatAmount,
   formatStockUnit,
+  formatTimestamp,
   formatStreetLine,
   PAYER_LABELS,
   PAYMENT_METHOD_LABELS,
@@ -213,6 +216,13 @@ function OrderDetailsPage() {
   const payMethod =
     order.payment_method ??
     (order.payer === 'cash' || order.payer === 'card' ? order.payer : null)
+  const pickupLine = [
+    formatStreetLine(order.pickup_street, order.pickup_house_number),
+    pickupPlace,
+  ]
+    .filter(Boolean)
+    .join(', ')
+  const code = customerCode(order)
   const isMyJob = order.driver_id === user?.id
   const headingToDestination = isMyJob && order.status === 'in_transit'
   const destinationLine = [
@@ -247,10 +257,22 @@ function OrderDetailsPage() {
         </p>
       )}
 
+      <Section title="Termin">
+        <p className="order-details-page__schedule">
+          {formatDateTime(order.scheduled_date, order.scheduled_time, order.express)}
+        </p>
+        {order.completed_at && (
+          <p className="order-details-page__done-at">
+            Erledigt: {formatTimestamp(order.completed_at)}
+          </p>
+        )}
+      </Section>
+
       <Section title="Kunde">
         <p className="order-details-page__customer-name">
           {customerDisplayName(order)}
         </p>
+        {code && <p className="order-details-page__customer-code">Kundennummer {code}</p>}
         {(order.contact_phone || order.customer?.phone) && (
           <div className="order-details-page__phone-row">
             <span>{order.contact_phone || order.customer?.phone}</span>
@@ -276,12 +298,6 @@ function OrderDetailsPage() {
         )}
       </Section>
 
-      <Section title="Termin">
-        <p className="order-details-page__schedule">
-          {formatDateTime(order.scheduled_date, order.scheduled_time, order.express)}
-        </p>
-      </Section>
-
       <Section title="Route">
         <div className="order-details-page__route">
           <div className="order-details-page__address">
@@ -295,6 +311,17 @@ function OrderDetailsPage() {
               <p>{formatStockUnit(order.pickup_stock, order.pickup_unit)}</p>
             )}
             {pickupPlace && <p>{pickupPlace}</p>}
+            {pickupLine && (
+              <a
+                href={navigationUrl(pickupLine, order.vehicle)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="order-details-page__nav"
+              >
+                <PinIcon />
+                Navigation starten
+              </a>
+            )}
           </div>
           <div
             className={`order-details-page__address${headingToDestination ? ' order-details-page__address--target' : ''}`}
@@ -320,6 +347,17 @@ function OrderDetailsPage() {
               </p>
             )}
             {destinationPlace && <p>{destinationPlace}</p>}
+            {destinationLine && (
+              <a
+                href={navigationUrl(destinationLine, order.vehicle)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="order-details-page__nav"
+              >
+                <PinIcon />
+                Navigation starten
+              </a>
+            )}
           </div>
         </div>
       </Section>

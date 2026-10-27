@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useRef, useState, type MouseEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   BikeIcon,
   CarIcon,
@@ -10,8 +10,11 @@ import { formatDateTime } from '../../lib/formatDate'
 import { getOrderPrice } from '../../lib/pricing'
 import { flyTo } from '../../lib/flyTo'
 import {
+  customerCode,
   formatAmount,
   formatPlace,
+  PAYMENT_METHOD_LABELS,
+  paymentMethodOf,
   PAYMENT_STATUS_LABELS,
   STATUS_LABELS,
   TRANSPORT_TYPE_LABELS,
@@ -41,6 +44,7 @@ function AvailableOrderCard({
   onAccepted,
   onReject,
 }: AvailableOrderCardProps) {
+  const navigate = useNavigate()
   const cardRef = useRef<HTMLDivElement>(null)
   const [accepting, setAccepting] = useState(false)
   const [rejecting, setRejecting] = useState(false)
@@ -48,6 +52,18 @@ function AvailableOrderCard({
   const VehicleIcon = order.vehicle ? VEHICLE_ICONS[order.vehicle] : null
   const amount = formatAmount(getOrderPrice(order))
   const busy = accepting || rejecting
+  const method = paymentMethodOf(order)
+  // The customer's profile is only readable once the order is accepted, so
+  // before that the card shows the number (and the name of imported orders).
+  const customerLine = [order.external_customer_name, customerCode(order)]
+    .filter(Boolean)
+    .join(' · ')
+
+  // The whole card opens the order; its own buttons and links keep working.
+  function handleCardClick(event: MouseEvent<HTMLDivElement>) {
+    if (busy || (event.target as HTMLElement).closest('button, a')) return
+    navigate(`/dashboard/jobs/${order.id}`)
+  }
 
   async function handleAccept() {
     setAccepting(true)
@@ -74,7 +90,8 @@ function AvailableOrderCard({
   return (
     <div
       ref={cardRef}
-      className={`available-order-card${busy ? '' : ' available-order-card--pending'}`}
+      className={`available-order-card available-order-card--clickable${busy ? '' : ' available-order-card--pending'}`}
+      onClick={handleCardClick}
     >
       <div className="available-order-card__top">
         <span className="available-order-card__type">
@@ -103,6 +120,11 @@ function AvailableOrderCard({
           </span>
         )}
         {amount && <span className="available-order-card__amount">{amount}</span>}
+        {method && (
+          <span className="available-order-card__method">
+            {PAYMENT_METHOD_LABELS[method]}
+          </span>
+        )}
         <span
           className={`available-order-card__badge${order.payment_status === 'paid' ? ' available-order-card__badge--paid' : ''}`}
         >
@@ -111,6 +133,10 @@ function AvailableOrderCard({
             : STATUS_LABELS.open}
         </span>
       </div>
+
+      {customerLine && (
+        <p className="available-order-card__customer">Kunde: {customerLine}</p>
+      )}
 
       {failed && (
         <p className="available-order-card__error">

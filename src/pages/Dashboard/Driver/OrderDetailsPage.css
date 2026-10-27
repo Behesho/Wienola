@@ -348,3 +348,43 @@
     animation: none;
   }
 }
+
+.order-details-page__customer-code {
+  margin: 2px 0 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.order-details-page__done-at {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-brand);
+}
+
+/* "Navigation starten" under each address: opens the maps app. */
+.order-details-page__nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  margin-top: 10px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--color-brand-rgb), 0.5);
+  color: var(--color-brand);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 150ms ease;
+}
+
+.order-details-page__nav:hover {
+  background: rgba(var(--color-brand-rgb), 0.1);
+}
+
+.order-details-page__nav svg {
+  width: 15px;
+  height: 15px;
+}

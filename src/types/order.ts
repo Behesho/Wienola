@@ -167,6 +167,35 @@ export function formatStockUnit(
     .join(' · ')
 }
 
+/** Customer number shown to drivers, e.g. "K-113BE4"; none for imported orders. */
+export function customerCode(order: {
+  customer_id: string
+  source?: string
+}): string | null {
+  if (order.source === 'abholance-mail') return null
+  return `K-${order.customer_id.slice(0, 6).toUpperCase()}`
+}
+
+/** Cash or card — also reads the old single payer column. */
+export function paymentMethodOf(order: {
+  payment_method?: PaymentMethodValue | null
+  payer: Payer | null
+}): PaymentMethodValue | null {
+  if (order.payment_method) return order.payment_method
+  return order.payer === 'cash' || order.payer === 'card' ? order.payer : null
+}
+
+/** "27.10.2026, 14:05" */
+export function formatTimestamp(iso: string): string {
+  return new Date(iso).toLocaleString('de-AT', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
 /** Name of the person the driver should deal with. */
 export function customerDisplayName(order: {
   external_customer_name: string | null

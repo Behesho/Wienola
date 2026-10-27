@@ -3,6 +3,7 @@ import { useAuth } from '../../../context/useAuth'
 import { supabase } from '../../../lib/supabase'
 import {
   acceptOrder,
+  autoCompleteStaleOrders,
   fetchOpenOrders,
   fetchRejectedOrderIds,
   rejectOrder,
@@ -55,6 +56,7 @@ function DriverHomePage() {
       setLoading(false)
     }
 
+    void autoCompleteStaleOrders()
     reload()
 
     const channel = supabase
