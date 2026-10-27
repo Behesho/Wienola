@@ -52,8 +52,22 @@ body,
 
 body {
   margin: 0;
+  /* Keeps content below the status bar / notch when running as an installed app. */
+  padding-top: env(safe-area-inset-top, 0px);
   background: var(--color-bg);
   color: var(--color-text);
+  /* Feels like an app, not a web page: no rubber-band reload, no grey tap flash. */
+  overscroll-behavior-y: contain;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+button,
+a,
+[role='button'] {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 input,

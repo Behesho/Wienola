@@ -22,7 +22,7 @@ interface AdminPageProps {
 
 /** Title row with "Aktualisieren", offline banner and pull-to-refresh. */
 export function AdminPage({ title, onRefresh, failed = false, children }: AdminPageProps) {
-  usePullToRefresh(onRefresh)
+  usePullToRefresh(onRefresh, 1)
 
   return (
     <div className="admin-page">
